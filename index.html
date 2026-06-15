@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japan-tur 2026 – Budsjett</title>
+<style>
+  :root{
+    --bg:#f6f5f2; --card:#ffffff; --ink:#1c1c1e; --muted:#6b7280;
+    --line:#e6e4df; --accent:#bc002d; --accent-soft:#fdeaee;
+    --good:#0f7b54; --warn:#b45309; --pin:#bc002d;
+    --pa:#9c5b62; --pb:#5a6b8c;
+    --shadow:0 1px 3px rgba(0,0,0,.06),0 6px 24px rgba(0,0,0,.05);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1200px;margin:0 auto;padding:24px 18px 80px}
+  header.top{display:flex;align-items:center;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+  .flag{font-size:30px}
+  h1{font-size:23px;margin:0;font-weight:650;letter-spacing:-.2px}
+  .sub{color:var(--muted);font-size:13.5px;margin:2px 0 22px}
+  .grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+  .stat .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  .stat .val{font-size:21px;font-weight:650;margin-top:4px}
+  .stat .sub2{font-size:12px;color:var(--muted);margin-top:2px}
+  .stat.total{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .stat.total .label,.stat.total .sub2{color:#cfcfd2}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:18px;box-shadow:var(--shadow)}
+  .card h2{font-size:16px;margin:0 0 4px;font-weight:620}
+  .card .hint{font-size:12.5px;color:var(--muted);margin:0 0 14px}
+  .controls{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-bottom:8px}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:12px;color:var(--muted);font-weight:550}
+  input[type=number],input[type=text],select{font-size:14px;padding:8px 10px;border:1px solid var(--line);
+    border-radius:9px;background:#fff;color:var(--ink);min-width:120px;font-family:inherit}
+  input:focus,select:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+  button{font-family:inherit;font-size:13.5px;padding:8px 13px;border-radius:9px;border:1px solid var(--line);
+    background:#fff;color:var(--ink);cursor:pointer;font-weight:550;transition:.12s}
+  button:hover{background:#f3f1ec}
+  button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.primary:hover{background:#9e0026}
+  button.ghost{background:transparent;border-color:transparent;color:var(--accent);padding:6px 8px}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{text-align:left;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;
+    font-weight:600;padding:8px 8px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card)}
+  td{padding:6px 8px;border-bottom:1px solid #f1efea;vertical-align:middle}
+  tr:hover td{background:rgba(0,0,0,.025)}
+  td.num,th.num{text-align:right}
+  .daycell{font-weight:600;white-space:nowrap}
+  .note-toggle{margin-top:7px;padding:3px 7px;border:1px solid var(--line);border-radius:7px;
+    background:#fff;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+  .note-toggle svg{width:15px;height:15px;display:block}
+  .note-toggle .caret{font-size:10px;line-height:1}
+  .note-toggle:hover{border-color:var(--accent);color:var(--accent)}
+  .note-toggle.has{border-width:2px;padding:2px 6px;border-color:#8a8a8a;color:var(--ink);background:#fff}
+  .note-row td{padding:9px 14px 13px;border-bottom:1px solid var(--line)}
+  .note-head{display:flex;align-items:center;justify-content:flex-start;gap:8px;margin-bottom:6px}
+  .note-label{font-size:12px;font-weight:600;color:var(--ink)}
+  .note-edit-btn.done{border-color:var(--good);color:var(--good)}
+  .note-text{font-size:13px;color:var(--ink);white-space:pre-wrap;background:#fff;border:1px solid var(--line);
+    border-radius:8px;padding:8px 10px;min-height:22px;line-height:1.5}
+  .note-text.empty{color:var(--muted);font-style:italic}
+  .note-link{color:var(--pb);text-decoration:underline;word-break:break-all}
+  .note-link:hover{color:var(--accent)}
+  .note-input{width:100%;min-height:64px;resize:vertical;border:1px solid var(--line);border-radius:8px;
+    padding:8px 10px;font-family:inherit;font-size:13px;color:var(--ink);box-sizing:border-box;background:#fff;line-height:1.5}
+  .note-input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+  .dow{color:var(--muted);font-weight:400;font-size:12px}
+  .weekend .dow{color:var(--accent)}
+  .night-input,.cell-input{width:88px;text-align:right;padding:6px 8px}
+  .trans-line{display:flex;align-items:center;justify-content:flex-end;gap:2px}
+  .auto-toggle{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--muted);cursor:pointer}
+  .auto-toggle input{width:16px;height:16px;cursor:pointer}
+  input:disabled{background:#f3f1ec;color:var(--muted);cursor:not-allowed}
+  .pinned{border-color:var(--pin);background:var(--accent-soft);font-weight:600}
+  .pinbtn{border:none;background:none;cursor:pointer;font-size:15px;line-height:1;padding:2px 4px;opacity:.4}
+  .pinbtn.on{opacity:1}
+  /* kolonnebredder dag-for-dag */
+  #dayTable td:first-child,#dayTable th:first-child{width:84px;white-space:nowrap}
+  #dayTable th:nth-child(5),#dayTable td:nth-child(5){width:30px;padding-left:0;padding-right:0}
+  #dayTable td:last-child,#dayTable th:last-child{width:90px;white-space:nowrap}
+  .tablewrap{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:12px}
+  .tablewrap.expanded{max-height:none;overflow-x:auto;overflow-y:visible}
+  tfoot td{font-weight:650;border-top:2px solid var(--line);background:#faf9f6;position:sticky;bottom:0}
+  .warnbox{background:#fff7ed;border:1px solid #fed7aa;color:var(--warn);padding:10px 12px;border-radius:10px;
+    font-size:13px;margin-top:10px;display:none}
+  .warnbox.show{display:block}
+  .other-row{display:grid;grid-template-columns:1fr 130px 120px 36px;gap:8px;margin-bottom:8px;align-items:center}
+  .other-row input{min-width:0;width:100%}
+  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:var(--accent-soft);
+    color:var(--accent);font-weight:600}
+  .topbar{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+  .muted-small{font-size:12px;color:var(--muted)}
+  .place-cell{min-width:166px;vertical-align:top}
+  .place-input{width:158px;padding:6px 8px;font-size:13px}
+  .linkrow{display:flex;gap:6px;align-items:center;margin-top:6px}
+  .link-input{width:92px;padding:5px 8px;font-size:11.5px;color:var(--ink)}
+  .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:28px;flex:0 0 auto;
+    border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--muted);cursor:pointer;padding:0;position:relative}
+  .icon-btn:hover{background:#f3f1ec;color:var(--ink)}
+  .icon-btn:disabled{opacity:.4;cursor:not-allowed}
+  .icon-btn:disabled:hover{background:#fff;color:var(--muted)}
+  .open-arrow.icon-btn:not(:disabled){border-color:#cfa7ac;color:var(--accent)}
+  .icon-btn svg{width:16px;height:16px;display:block}
+  .bucket.active{border-color:currentColor;background:#fff}
+  .color-over{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0;margin:0}
+  .hotel-cell{min-width:166px;vertical-align:top}
+  .img-wrap{position:relative;width:160px;height:112px;border-radius:9px;overflow:hidden}
+  .thumb{width:160px;height:112px;object-fit:cover;border-radius:9px;border:1px solid var(--line);display:block}
+  .img-overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;gap:7px;
+    background:rgba(0,0,0,.45)}
+  .img-wrap:hover .img-overlay{display:flex}
+  .img-overlay button{background:#fff;border:none;padding:6px 11px;font-size:12px;border-radius:7px;
+    cursor:pointer;font-weight:600;color:var(--ink)}
+  .img-overlay button:hover{background:#efedea}
+  .addimg{border:1.5px dashed var(--line);background:#faf9f6;color:var(--muted);width:160px;height:112px;
+    border-radius:9px;font-size:13px;display:flex;align-items:center;justify-content:center;text-align:center;
+    line-height:1.3;cursor:pointer}
+  .addimg:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .other-cell{min-width:138px;font-size:12px;text-align:left;vertical-align:top}
+  .oi{display:flex;justify-content:space-between;gap:10px;padding:1px 0}
+  .oi-name{color:var(--ink)}
+  .oi-amt{color:var(--muted);white-space:nowrap}
+  .oi-sum{border-top:1px solid #f1efea;margin-top:3px;padding-top:3px;font-weight:600}
+  .oi-sum span{color:var(--ink)}
+  .who-row{display:flex;gap:5px;margin-top:6px;justify-content:flex-end}
+  .who-btn{font-size:11px;padding:2px 9px;border:1px solid var(--line);border-radius:20px;background:#fff;
+    color:var(--muted);cursor:pointer;font-weight:550;line-height:1.5;transition:.1s}
+  .who-row.left{justify-content:flex-start;margin-top:8px}
+  .who-btn.a:hover{border-color:var(--pa);color:var(--pa)}
+  .who-btn.b:hover{border-color:var(--pb);color:var(--pb)}
+  .who-btn.a.on{background:#f4e8e9;border-color:#cfa7ac;color:var(--pa)}
+  .who-btn.b.on{background:#e9edf4;border-color:#aab4c9;color:var(--pb)}
+  .who-sums{font-size:11px;font-weight:600;margin-top:4px;white-space:nowrap}
+  .pa{color:var(--pa);font-weight:600}
+  .pb{color:var(--pb);font-weight:600}
+  /* Bibbi-notis */
+  .who-btn.b{position:relative}
+  .bibbi-note{position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%) translateY(4px);
+    background:#ffd9e6;color:#8a3a55;font-size:11px;font-weight:600;padding:5px 10px;border-radius:9px;
+    white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s;z-index:30;
+    box-shadow:0 5px 16px rgba(214,120,150,.35)}
+  .bibbi-note::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);
+    border:5px solid transparent;border-top-color:#ffd9e6}
+  .who-btn.b:hover .bibbi-note{opacity:1;transform:translateX(-50%) translateY(0)}
+  .peach{display:inline-block;transform-origin:50% 90%}
+  .who-btn.b:hover .peach{animation:wiggle .5s ease-in-out infinite}
+  @keyframes wiggle{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+  .other-item{padding:10px 0;border-bottom:1px solid #f1efea}
+  .other-item:last-child{border-bottom:none}
+  .split-box{margin-top:16px;padding-top:14px;border-top:2px solid var(--line)}
+  .split-box h3{font-size:14.5px;margin:0 0 2px;font-weight:620}
+  .settle{margin-top:10px;padding:11px 14px;border-radius:11px;background:var(--accent-soft);
+    font-size:15px;font-weight:550;text-align:center}
+  .settle.even{background:#ecfdf5;color:#065f46}
+  .settle.neutral{background:#f3f1ec;color:var(--muted);font-weight:400;font-size:12.5px}
+  .grand{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;padding:6px 0}
+  .grand .g-val{font-weight:650;font-size:17px}
+  .grand.big{border-top:2px solid var(--line);margin-top:8px;padding-top:12px;font-size:17px}
+  .grand.big .g-val{font-size:23px;color:var(--accent)}
+  details summary{cursor:pointer;font-size:13px;color:var(--accent);font-weight:550;margin-top:6px}
+  .footer-note{font-size:11.5px;color:var(--muted);text-align:center;margin-top:30px}
+  .sync-badge{display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:6px 11px;
+    border-radius:9px;background:#f3f1ec;color:var(--muted);border:1px solid var(--line)}
+  .sync-badge.ok{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+  .sync-badge.off{background:#fff7ed;color:#b45309;border-color:#fed7aa}
+  .sync-badge.live{background:#eef2ff;color:#3730a3;border-color:#c7d2fe}
+  @media(max-width:560px){.other-row{grid-template-columns:1fr 1fr;}.night-input,.cell-input{width:88px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="flag">🗾</span>
+    <div>
+      <h1>Japan-tur 2026 – Budsjett</h1>
+    </div>
+    <div class="topbar">
+      <span class="sync-badge" id="syncBadge" title="Lagringsstatus">💾 Lokal</span>
+      <button onclick="exportData()">⬇︎ Eksporter</button>
+      <button onclick="document.getElementById('importFile').click()">⬆︎ Importer</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+      <button onclick="window.print()">🖨 Skriv ut</button>
+      <button onclick="resetAll()">↺ Nullstill</button>
+    </div>
+  </header>
+  <p class="sub" id="tripSub">19. oktober – 19. november 2026</p>
+
+  <!-- SUMMARY CARDS -->
+  <div class="grid-cards" id="statCards"></div>
+
+  <!-- GLOBAL SETTINGS -->
+  <section class="card">
+    <h2>Innstillinger</h2>
+    <p class="hint">Endre reisedatoer og antall reisende. Alle beløp føres i norske kroner.</p>
+    <div class="controls">
+      <div class="field">
+        <label>Ankomst</label>
+        <input type="date" id="startDate" value="2026-10-19">
+      </div>
+      <div class="field">
+        <label>Avreise</label>
+        <input type="date" id="endDate" value="2026-11-19">
+      </div>
+      <div class="field">
+        <label>Antall reisende</label>
+        <input type="number" id="travelers" min="1" value="2" style="width:90px">
+      </div>
+      <div class="field">
+        <label>Total reisebudsjett (valgfritt, kr)</label>
+        <input type="number" id="tripBudget" min="0" step="500" placeholder="f.eks. 80000" style="width:160px">
+      </div>
+    </div>
+  </section>
+
+  <!-- HOTEL -->
+  <section class="card">
+    <h2>🏨 Hotell</h2>
+    <p class="hint">Sett en generell pris pr natt, så fylles alle nettene likt. Justerer du én natt, fordeles differansen
+      automatisk på de andre nettene slik at totalsummen holder seg lik. Trykk 📌 for å «låse» en natt så den ikke endres når andre justeres.</p>
+    <div class="controls">
+      <div class="field">
+        <label>Generell pris pr natt (kr)</label>
+        <input type="number" id="generalNight" min="0" step="50" value="1200">
+      </div>
+      <div class="field">
+        <label>Total hotellbudsjett (kr)</label>
+        <input type="number" id="hotelTotal" min="0" step="100">
+      </div>
+      <div style="align-self:flex-end;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="primary" onclick="applyGeneral()">Bruk på alle netter</button>
+        <button onclick="applyGeneralKeepLocked()">Behold låste 📌, fordel resten</button>
+      </div>
+    </div>
+    <p class="hint" style="margin:10px 0 0">«Bruk på alle netter» setter alle nettene til den generelle prisen (og låser opp alt). «Behold låste 📌, fordel resten»
+      bruker generell pris × antall netter som totalbudsjett, beholder de låste nettene uendret, og regner om de andre så totalen treffer.</p>
+    <div class="warnbox" id="hotelWarn"></div>
+  </section>
+
+  <!-- TRANSPORT -->
+  <section class="card">
+    <h2>🚄 Transport</h2>
+    <p class="hint">Sett en generell transportsum pr dag og trykk «Bruk på alle dager» for å fylle alle dagene likt.
+      Deretter kan du fritt justere enkeltdager – noen blir dyrere, andre holder basisprisen, og totalen vokser tilsvarende.
+      Vil du i stedet jobbe med et fast totalbudsjett (som på hotell), kryss av for automatisk fordeling.</p>
+    <div class="controls">
+      <div class="field">
+        <label>Generell transport pr dag (kr)</label>
+        <input type="number" id="generalTransport" min="0" step="50" value="200">
+      </div>
+      <div class="field">
+        <label>Total transportbudsjett (kr)</label>
+        <input type="number" id="transportTotal" min="0" step="100">
+      </div>
+      <div style="align-self:flex-end">
+        <button class="primary" onclick="applyGeneralTransport()">Bruk på alle dager</button>
+      </div>
+    </div>
+    <label class="auto-toggle"><input type="checkbox" id="transAuto"> Automatisk fordeling – hold totalbudsjettet fast og fordel endringer på de andre dagene (lås dager med 📌)</label>
+    <div class="warnbox" id="transWarn"></div>
+  </section>
+
+  <!-- DAILY TABLE -->
+  <section class="card">
+    <h2>📅 Dag for dag</h2>
+    <p class="hint">Skriv inn hvor dere skal være / hotellnavn, last opp et bilde av hotellet, og lim inn en lenke (Google Maps
+      eller hotellets nettside) – da blir bildet klikkbart. Hotell, transport og andre utgifter står i hver sin kolonne med egen
+      kolonnesum, ved siden av daglig delsum. Hotellpris gjelder natten som starter den dagen; avreisedagen har ingen hotellnatt.</p>
+    <div class="btn-row" style="margin-bottom:12px">
+      <button id="expandBtn" onclick="toggleExpand()">⤢ Vis alle dager (uten scroll)</button>
+      <button onclick="expandAllNotes()">📝 Vis dager med notat</button>
+      <button onclick="collapseAllNotes()">Skjul alle notater</button>
+    </div>
+    <div class="tablewrap" id="tablewrap">
+      <table id="dayTable">
+        <thead>
+          <tr>
+            <th>Dato</th>
+            <th>Sted / hotell</th>
+            <th>Bilde</th>
+            <th class="num">Hotell / natt</th>
+            <th style="width:34px"></th>
+            <th class="num">Transport</th>
+            <th class="num">Andre</th>
+            <th class="num">Dagssum</th>
+          </tr>
+        </thead>
+        <tbody id="dayBody"></tbody>
+        <tfoot>
+          <tr>
+            <td>Sum</td>
+            <td></td>
+            <td></td>
+            <td class="num"><div id="sumHotel">–</div><div class="who-sums" id="whoSums"></div></td>
+            <td></td>
+            <td class="num" id="sumTransport">–</td>
+            <td class="num" id="sumOtherDay">–</td>
+            <td class="num" id="sumDayTotal">–</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+  <!-- OTHER EXPENSES -->
+  <section class="card">
+    <h2>🎟 Andre utgifter</h2>
+    <p class="hint">Museer, kultur, mat, opplevelser, shopping m.m. Koble gjerne en utgift til en bestemt dag – da telles
+      den med i dagssummen over.</p>
+    <div id="otherList"></div>
+    <div class="btn-row">
+      <button class="primary" onclick="addOther()">+ Legg til utgift</button>
+    </div>
+  </section>
+
+  <!-- TOTALS -->
+  <section class="card">
+    <h2>💴 Oppsummering</h2>
+    <div class="grand"><span>Hotell</span><span class="g-val" id="gHotel">–</span></div>
+    <div class="grand"><span>Transport</span><span class="g-val" id="gTransport">–</span></div>
+    <div class="grand"><span>Andre utgifter</span><span class="g-val" id="gOther">–</span></div>
+    <div class="grand big"><span>Totalt</span><span class="g-val" id="gTotal">–</span></div>
+    <div class="grand" id="perPersonRow"><span class="muted-small">Pr person</span><span class="muted-small" id="gPerPerson">–</span></div>
+    <div class="grand" id="perDayRow"><span class="muted-small">Snitt pr dag</span><span class="muted-small" id="gPerDay">–</span></div>
+    <div class="warnbox" id="budgetBox"></div>
+
+    <div class="split-box">
+      <h3>Hvem har betalt hva</h3>
+      <p class="hint" style="margin:0 0 10px">Basert på Anette/Bibbi-markeringene på hotell, transport og andre utgifter. Markerer du begge, deles posten likt. Utgifter delt likt mellom dere; den som har lagt ut mest får igjen av den andre.</p>
+      <div class="grand"><span class="pa">Anette har lagt ut</span><span class="g-val pa" id="paidA">–</span></div>
+      <div class="grand"><span class="pb">Bibbi har lagt ut</span><span class="g-val pb" id="paidB">–</span></div>
+      <div class="settle" id="settleRow">–</div>
+    </div>
+  </section>
+
+  <p class="footer-note">Data lagres automatisk i nettleseren din. Bruk «Eksporter» for å ta vare på en kopi.</p>
+</div>
+
+<!-- Firebase (valgfritt – for delt synk mellom flere). Brukes bare når config under er fylt ut. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+"use strict";
+
+/* =======================================================================
+   DELT SYNK – fyll ut for at dere skal jobbe i samme budsjett.
+   1) Lim inn Firebase-config fra ditt gratis prosjekt under.
+   2) Velg en hemmelig delingskode (samme hos begge) – fungerer som "rom".
+   La stå som det er for å bruke kun lokal lagring i nettleseren.
+   ======================================================================= */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCwGQwz0RCLSB4i0lRNc_-jki-27-yagp0",
+  authDomain: "japan-budsjett.firebaseapp.com",
+  projectId: "japan-budsjett",
+  storageBucket: "japan-budsjett.firebasestorage.app",
+  messagingSenderId: "66394629808",
+  appId: "1:66394629808:web:f606ded2babec67b30bd75"
+};
+const SHARE_CODE = "japan-anette-bibbi-2026-k7p3x9qm4w";
+
+const KEY="japan_budget_2026_v1";
+let state={
+  startDate:"2026-10-19", endDate:"2026-11-19", travelers:2, tripBudget:"",
+  generalNight:1200,
+  generalTransport:200,
+  transAuto:false, // automatisk omfordeling av transport (av som standard)
+  nights:{},   // index -> {price, pinned}
+  transport:{},// index -> amount
+  transPinned:{},// index -> bool (låst transport-dag)
+  other:[],    // {name, day(index|null), amount}
+  note:{},     // index -> notat-tekst for dagen
+  place:{},    // index -> text (sted / hotellnavn)
+  img:{},      // index -> data URL (hotellbilde)
+  link:{},     // index -> URL (maps eller nettside)
+  color:{},    // index -> hex bakgrunnsfarge
+  who:{},      // index -> {a:bool, b:bool} hvem hotellnatten gjelder
+  whoT:{},     // index -> {a:bool, b:bool} hvem transporten gjelder
+  expanded:false // vis hele tabellen uten indre scroll
+};
+const BIBBI_LABEL='Bibbi<span class="bibbi-note">Du har finest rumpe <span class="peach">🍑</span></span>';
+const DOW=["søn","man","tir","ons","tor","fre","lør"];
+const MONTH=["jan","feb","mar","apr","mai","jun","jul","aug","sep","okt","nov","des"];
+
+/* ---------- date helpers ---------- */
+function parseD(s){const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);}
+function dayList(){ // returns array of {date, isLast}
+  const a=parseD(state.startDate), b=parseD(state.endDate);
+  const out=[]; let cur=new Date(a);
+  while(cur<=b){ out.push(new Date(cur)); cur.setDate(cur.getDate()+1); }
+  return out;
+}
+function nNights(){ return Math.max(0, dayList().length-1); }
+function fmt(n){
+  if(n==null||isNaN(n))return "–";
+  return Math.round(n).toLocaleString("no-NO")+" kr";
+}
+
+/* ---------- hotel redistribution ---------- */
+function hotelTotal(){
+  let s=0; const N=nNights();
+  for(let i=0;i<N;i++){ s+=nightPrice(i); }
+  return s;
+}
+function nightPrice(i){
+  const o=state.nights[i];
+  return o?(o.price||0):(parseFloat(state.generalNight)||0);
+}
+function applyGeneral(){
+  const N=nNights(); const v=parseFloat(state.generalNight)||0;
+  state.nights={};
+  for(let i=0;i<N;i++) state.nights[i]={price:v,pinned:false};
+  save(); render();
+}
+function applyGeneralKeepLocked(){
+  const N=nNights(); const v=parseFloat(state.generalNight)||0;
+  setHotelTotalDirect(v*N); // mål-total = generell pris × netter, låste beholdes
+}
+function setHotelTotalDirect(newTotal){
+  // distribute newTotal across unpinned nights, keep pinned fixed
+  const N=nNights(); let pinnedSum=0, unpinned=[];
+  for(let i=0;i<N;i++){ const o=state.nights[i]||{price:nightPrice(i),pinned:false};
+    state.nights[i]=o;
+    if(o.pinned)pinnedSum+=o.price; else unpinned.push(i);}
+  let rem=newTotal-pinnedSum;
+  if(unpinned.length===0)return; // all pinned, can't change
+  let each=rem/unpinned.length;
+  if(each<0)each=0;
+  unpinned.forEach(i=>state.nights[i].price=each);
+  save(); render();
+}
+function editNight(i,val){
+  // user set night i to val -> pin it, redistribute rest among other UNPINNED nights, keep total constant
+  const N=nNights();
+  const prevTotal=hotelTotal();
+  for(let k=0;k<N;k++){ if(!state.nights[k]) state.nights[k]={price:nightPrice(k),pinned:false}; }
+  state.nights[i]={price:val,pinned:true};
+  // others that are not pinned absorb the change
+  let pinnedSum=0, unpinned=[];
+  for(let k=0;k<N;k++){ if(state.nights[k].pinned)pinnedSum+=state.nights[k].price; else unpinned.push(k); }
+  let rem=prevTotal-pinnedSum;
+  if(unpinned.length>0){
+    let each=rem/unpinned.length;
+    if(each<0)each=0;
+    unpinned.forEach(k=>state.nights[k].price=each);
+  }
+  save(); render();
+}
+function togglePin(i){
+  const N=nNights();
+  if(!state.nights[i]) state.nights[i]={price:nightPrice(i),pinned:false};
+  state.nights[i].pinned=!state.nights[i].pinned;
+  save(); render();
+}
+function toggleWho(i,k){
+  if(!state.who[i]) state.who[i]={a:false,b:false};
+  state.who[i][k]=!state.who[i][k];
+  save(); render();
+}
+function toggleWhoT(i,k){
+  if(!state.whoT[i]) state.whoT[i]={a:false,b:false};
+  state.whoT[i][k]=!state.whoT[i][k];
+  save(); render();
+}
+function toggleWhoO(idx,k){
+  if(!state.other[idx].who) state.other[idx].who={a:false,b:false};
+  state.other[idx].who[k]=!state.other[idx].who[k];
+  save(); render();
+}
+function addShare(acc,w,amt){
+  if(!w||!amt)return; const c=(w.a?1:0)+(w.b?1:0); if(!c)return;
+  const s=amt/c; if(w.a)acc.A+=s; if(w.b)acc.B+=s;
+}
+function personHotel(){
+  const acc={A:0,B:0}; const N=nNights();
+  for(let i=0;i<N;i++) addShare(acc,state.who[i],nightPrice(i));
+  return acc;
+}
+function balances(){
+  const acc={A:0,B:0}; const N=nNights();
+  for(let i=0;i<N;i++) addShare(acc,state.who[i],nightPrice(i));
+  const D=nDays(); for(let i=0;i<D;i++) addShare(acc,state.whoT[i],transAmt(i));
+  state.other.forEach(o=>addShare(acc,o.who,parseFloat(o.amount)||0));
+  return acc;
+}
+
+/* ---------- other expenses ---------- */
+function addOther(){ state.other.push({name:"",day:"",amount:0,who:{a:false,b:false}}); save(); render(); }
+function removeOther(idx){ state.other.splice(idx,1); save(); render(); }
+function otherTotal(){ return state.other.reduce((s,o)=>s+(parseFloat(o.amount)||0),0); }
+function otherForDay(i){ return state.other.reduce((s,o)=>s+((o.day!==""&&Number(o.day)===i)?(parseFloat(o.amount)||0):0),0); }
+function transAmt(i){ return parseFloat(state.transport[i])||0; }
+function nDays(){ return dayList().length; }
+function transportTotal(){ let s=0; const D=nDays(); for(let i=0;i<D;i++) s+=transAmt(i); return s; }
+function applyGeneralTransport(){
+  const D=nDays(); const v=parseFloat(state.generalTransport)||0;
+  state.transport={}; state.transPinned={};
+  for(let i=0;i<D;i++) state.transport[i]=v;
+  save(); render();
+}
+function editTransport(i,val){
+  if(!state.transAuto){ state.transport[i]=val; save(); render(); return; }
+  const D=nDays();
+  const prevTotal=transportTotal();
+  for(let k=0;k<D;k++){ if(state.transport[k]===undefined) state.transport[k]=transAmt(k); }
+  state.transport[i]=val; state.transPinned[i]=true;
+  let pinnedSum=0, unpinned=[];
+  for(let k=0;k<D;k++){ if(state.transPinned[k]) pinnedSum+=transAmt(k); else unpinned.push(k); }
+  let rem=prevTotal-pinnedSum;
+  if(unpinned.length>0){ let each=rem/unpinned.length; if(each<0)each=0; unpinned.forEach(k=>state.transport[k]=each); }
+  save(); render();
+}
+function setTransportTotalDirect(newTotal){
+  const D=nDays(); let pinnedSum=0, unpinned=[];
+  for(let i=0;i<D;i++){ if(state.transport[i]===undefined) state.transport[i]=transAmt(i);
+    if(state.transPinned[i]) pinnedSum+=transAmt(i); else unpinned.push(i); }
+  if(unpinned.length===0)return;
+  let each=(newTotal-pinnedSum)/unpinned.length; if(each<0)each=0;
+  unpinned.forEach(i=>state.transport[i]=each);
+  save(); render();
+}
+function toggleTransPin(i){
+  state.transPinned[i]=!state.transPinned[i];
+  save(); render();
+}
+
+/* ---------- render ---------- */
+function render(){
+  const days=dayList(); const N=nNights();
+  // trip subtitle
+  const a=parseD(state.startDate), b=parseD(state.endDate);
+  document.getElementById("tripSub").textContent=
+    `${a.getDate()}. ${fullMonth(a.getMonth())} – ${b.getDate()}. ${fullMonth(b.getMonth())} ${b.getFullYear()} · ${N} netter · ${days.length} dager`;
+
+  // hotel total field
+  document.getElementById("hotelTotal").value=Math.round(hotelTotal());
+  document.getElementById("transportTotal").value=Math.round(transportTotal());
+  document.getElementById("transportTotal").disabled=!state.transAuto;
+  document.getElementById("transAuto").checked=!!state.transAuto;
+
+  // day table
+  const body=document.getElementById("dayBody"); body.innerHTML="";
+  days.forEach((d,i)=>{
+    const isLast=(i===days.length-1);
+    const tr=document.createElement("tr");
+    const wd=d.getDay(); if(wd===0||wd===6)tr.className="weekend";
+    if(state.color[i]&&state.color[i].toLowerCase()!=="#ffffff"){ tr.style.background=hexToRgba(state.color[i],0.22); }
+    const hasNote=(state.note[i]||"").trim()!=="";
+    const nOpen=!!noteOpen[i];
+    const noteSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>`;
+    const noteToggle=`<button class="note-toggle ${hasNote?'has':''}" title="${hasNote?'Notat skrevet':'Legg til notat'}" onclick="toggleNote(${i})">${noteSvg}<span class="caret">${nOpen?'▾':'▸'}</span></button>`;
+    const dateCell=`<td class="daycell">${d.getDate()}. ${MONTH[d.getMonth()]} <span class="dow">${DOW[wd]}</span><div>${noteToggle}</div></td>`;
+
+    // sted / hotellnavn + lenke-knapp + fargevalg
+    const lnk=state.link[i]||"";
+    const col=state.color[i]||"#ffffff";
+    const hasColor=state.color[i]&&state.color[i].toLowerCase()!=="#ffffff";
+    const bucketSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 11-8-8-8.6 8.6a2 2 0 0 0 0 2.8l5.2 5.2c.8.8 2 .8 2.8 0L19 11Z"/><path d="m5 2 5 5"/><path d="M2 13h15"/><path d="M22 20a2 2 0 1 1-4 0c0-1.6 1.7-2.4 2-4 .3 1.6 2 2.4 2 4Z"/></svg>`;
+    const banSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>`;
+    const arrowSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>`;
+    const upSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>`;
+    const placeCell=`<td class="place-cell">
+        <input type="text" class="place-input" placeholder="Sted / hotell"
+          value="${escapeHtml(state.place[i]||'')}" oninput="state.place[${i}]=this.value;save()">
+        <div class="linkrow">
+          <input type="url" class="link-input" placeholder="Lim inn lenke"
+            value="${escapeHtml(lnk)}" oninput="state.link[${i}]=this.value;save();syncOpenBtn(${i})">
+          <button class="icon-btn open-arrow" id="open${i}" ${lnk.trim()?'':'disabled'} title="Åpne lenke" onclick="openLink(${i})">${arrowSvg}</button>
+        </div>
+        <div class="linkrow">
+          <span class="bucket-wrap icon-btn bucket ${hasColor?'active':''}" title="Velg bakgrunnsfarge"
+            style="${hasColor?`color:${state.color[i]}`:''}">
+            ${bucketSvg}
+            <input type="color" class="color-over" value="${col}" oninput="setColor(${i},this.value,this)">
+          </span>
+          <button type="button" class="icon-btn" title="Ingen farge" onclick="clearColor(${i})">${banSvg}</button>
+          <button type="button" class="icon-btn" ${i===0?'disabled':''} title="Bruk samme farge som dagen før" onclick="copyPrevColor(${i})">${upSvg}</button>
+        </div></td>`;
+
+    // bilde med hover-meny
+    let imgInner;
+    if(state.img[i]){
+      imgInner=`<div class="img-wrap">
+          <img class="thumb" src="${state.img[i]}" alt="hotell">
+          <div class="img-overlay">
+            <button onclick="document.getElementById('imgf${i}').click()">Endre</button>
+            <button onclick="removeImg(${i})">Fjern</button>
+          </div>
+        </div>`;
+    }else{
+      imgInner=`<div class="addimg" onclick="document.getElementById('imgf${i}').click()">+ Legg til bilde</div>`;
+    }
+    const imgCell=`<td class="hotel-cell">
+        <input type="file" id="imgf${i}" accept="image/*" style="display:none" onchange="handleImg(${i},this)">
+        ${imgInner}</td>`;
+
+    let hotelCell, pinCell;
+    if(isLast){
+      hotelCell=`<td class="num"><span class="muted-small">avreise</span></td>`;
+      pinCell=`<td></td>`;
+    }else{
+      const o=state.nights[i]||{price:nightPrice(i),pinned:false};
+      const cls=o.pinned?"night-input pinned":"night-input";
+      const w=state.who[i]||{a:false,b:false};
+      const whoRow=`<div class="who-row">
+          <button class="who-btn a ${w.a?'on':''}" onclick="toggleWho(${i},'a')">Anette</button>
+          <button class="who-btn b ${w.b?'on':''}" onclick="toggleWho(${i},'b')">${BIBBI_LABEL}</button>
+        </div>`;
+      hotelCell=`<td class="num"><input type="number" min="0" step="50" class="${cls}" value="${Math.round(o.price)}"
+        onchange="editNight(${i}, parseFloat(this.value)||0)">
+        ${whoRow}</td>`;
+      pinCell=`<td><button class="pinbtn ${o.pinned?'on':''}" title="Lås denne natten" onclick="togglePin(${i})">📌</button></td>`;
+    }
+    const tv=state.transport[i]||"";
+    const tp=state.transPinned[i];
+    const wt=state.whoT[i]||{a:false,b:false};
+    const tHasVal=(parseFloat(state.transport[i])||0)>0;
+    const whoRowT=tHasVal?`<div class="who-row">
+        <button class="who-btn a ${wt.a?'on':''}" onclick="toggleWhoT(${i},'a')">Anette</button>
+        <button class="who-btn b ${wt.b?'on':''}" onclick="toggleWhoT(${i},'b')">${BIBBI_LABEL}</button>
+      </div>`:"";
+    const transPinBtn=state.transAuto?`<button class="pinbtn ${tp?'on':''}" title="Lås denne dagen" onclick="toggleTransPin(${i})">📌</button>`:"";
+    const transCell=`<td class="num">
+        <div class="trans-line">
+          <input type="number" min="0" step="50" class="${tp&&state.transAuto?'cell-input pinned':'cell-input'}" value="${tv}"
+            placeholder="0" onchange="editTransport(${i}, parseFloat(this.value)||0)">
+          ${transPinBtn}
+        </div>${whoRowT}</td>`;
+    const dayItems=state.other.filter(o=>o.day!==""&&Number(o.day)===i);
+    const od=dayItems.reduce((s,o)=>s+(parseFloat(o.amount)||0),0);
+    let otherCell;
+    if(dayItems.length){
+      const lines=dayItems.map(o=>`<div class="oi"><span class="oi-name">${escapeHtml(o.name||'Utgift')}</span><span class="oi-amt">${fmt(parseFloat(o.amount)||0)}</span></div>`).join("");
+      const sumLine=dayItems.length>1?`<div class="oi oi-sum"><span>Sum</span><span>${fmt(od)}</span></div>`:"";
+      otherCell=`<td class="other-cell">${lines}${sumLine}</td>`;
+    }else{
+      otherCell=`<td class="num"><span class="muted-small">–</span></td>`;
+    }
+    const dayTotal=(isLast?0:nightPrice(i))+(parseFloat(state.transport[i])||0)+od;
+    const totCell=`<td class="num"><strong>${fmt(dayTotal)}</strong></td>`;
+    tr.innerHTML=dateCell+placeCell+imgCell+hotelCell+pinCell+transCell+otherCell+totCell;
+    body.appendChild(tr);
+    if(nOpen){
+      const tint=(state.color[i]&&state.color[i].toLowerCase()!=="#ffffff")?hexToRgba(state.color[i],0.22):"#faf9f6";
+      const editing=!!noteEdit[i];
+      const txt=state.note[i]||"";
+      const pencilSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
+      const checkSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+      const editBtn=`<button class="icon-btn note-edit-btn ${editing?'done':''}" title="${editing?'Ferdig':'Rediger'}" onclick="toggleNoteEdit(${i})">${editing?checkSvg:pencilSvg}</button>`;
+      const bodyHtml=editing
+        ? `<textarea id="note${i}" class="note-input" placeholder="Skriv notat for ${d.getDate()}. ${MONTH[d.getMonth()]} – f.eks. planer, åpningstider, reservasjoner…" oninput="state.note[${i}]=this.value;save()">${escapeHtml(txt)}</textarea>`
+        : (txt.trim()
+            ? `<div class="note-text">${linkify(txt)}</div>`
+            : `<div class="note-text empty">Ingen notat ennå – trykk på blyanten for å skrive.</div>`);
+      const nr=document.createElement("tr"); nr.className="note-row";
+      nr.innerHTML=`<td colspan="8" style="background:${tint}">
+          <div class="note-head"><span class="note-label">Notat – ${d.getDate()}. ${MONTH[d.getMonth()]}</span>${editBtn}</div>
+          ${bodyHtml}
+        </td>`;
+      body.appendChild(nr);
+    }
+  });
+
+  // footers
+  const ht=hotelTotal(), tt=transportTotal(), ot=otherTotal();
+  document.getElementById("sumHotel").textContent=fmt(ht);
+  const pw=personHotel();
+  document.getElementById("whoSums").innerHTML=
+    `<span class="pa">Anette ${fmt(pw.A)}</span> · <span class="pb">Bibbi ${fmt(pw.B)}</span>`;
+  document.getElementById("sumTransport").textContent=fmt(tt);
+  document.getElementById("sumOtherDay").textContent=fmt(state.other.reduce((s,o)=>s+((o.day!=="")?(parseFloat(o.amount)||0):0),0));
+  document.getElementById("sumDayTotal").textContent=fmt(ht+tt+ot);
+
+  // other list
+  const ol=document.getElementById("otherList"); ol.innerHTML="";
+  if(state.other.length===0){ ol.innerHTML=`<p class="muted-small">Ingen utgifter lagt til ennå.</p>`; }
+  state.other.forEach((o,idx)=>{
+    const wrap=document.createElement("div"); wrap.className="other-item";
+    let opts=`<option value="">– ingen dag –</option>`;
+    days.forEach((d,i)=>{ if(i===days.length-1)return;
+      opts+=`<option value="${i}" ${String(o.day)===String(i)?'selected':''}>${d.getDate()}. ${MONTH[d.getMonth()]}</option>`; });
+    const w=o.who||{a:false,b:false};
+    wrap.innerHTML=`
+      <div class="other-row">
+        <input type="text" placeholder="Beskrivelse (f.eks. TeamLab, Senso-ji)" value="${escapeHtml(o.name)}"
+          onchange="state.other[${idx}].name=this.value;save()">
+        <select onchange="state.other[${idx}].day=this.value;save();render()">${opts}</select>
+        <input type="number" min="0" step="50" placeholder="kr" value="${o.amount||''}"
+          onchange="state.other[${idx}].amount=parseFloat(this.value)||0;save();render()">
+        <button class="ghost" title="Fjern" onclick="removeOther(${idx})">✕</button>
+      </div>
+      <div class="who-row left">
+        <button class="who-btn a ${w.a?'on':''}" onclick="toggleWhoO(${idx},'a')">Anette</button>
+        <button class="who-btn b ${w.b?'on':''}" onclick="toggleWhoO(${idx},'b')">${BIBBI_LABEL}</button>
+      </div>`;
+    ol.appendChild(wrap);
+  });
+
+  // summary cards
+  const grand=ht+tt+ot;
+  const trav=Math.max(1,parseInt(state.travelers)||1);
+  document.getElementById("statCards").innerHTML=`
+    <div class="stat"><div class="label">Hotell</div><div class="val">${fmt(ht)}</div><div class="sub2">${N} netter</div></div>
+    <div class="stat"><div class="label">Transport</div><div class="val">${fmt(tt)}</div></div>
+    <div class="stat"><div class="label">Andre</div><div class="val">${fmt(ot)}</div></div>
+    <div class="stat total"><div class="label">Totalt</div><div class="val">${fmt(grand)}</div></div>`;
+
+  // totals section
+  document.getElementById("gHotel").textContent=fmt(ht);
+  document.getElementById("gTransport").textContent=fmt(tt);
+  document.getElementById("gOther").textContent=fmt(ot);
+  document.getElementById("gTotal").textContent=fmt(grand);
+  document.getElementById("gPerPerson").textContent=fmt(grand/trav)+` (${trav} reisende)`;
+  document.getElementById("gPerDay").textContent=fmt(grand/days.length)+` (${days.length} dager)`;
+
+  // settlement (hvem skylder hvem)
+  const bal=balances();
+  document.getElementById("paidA").textContent=fmt(bal.A);
+  document.getElementById("paidB").textContent=fmt(bal.B);
+  const diff=(bal.A-bal.B)/2;
+  const sr=document.getElementById("settleRow");
+  if(bal.A+bal.B===0){
+    sr.className="settle neutral";
+    sr.textContent="Marker hvem som har betalt på hotell, transport og andre utgifter for å se oppgjøret.";
+  }else if(Math.abs(diff)<1){
+    sr.className="settle even";
+    sr.textContent="✓ Dere er kvitt – ingen skylder noe. 🎉";
+  }else if(diff>0){
+    sr.className="settle";
+    sr.innerHTML=`<span class="pb">Bibbi</span> skylder <span class="pa">Anette</span> <strong>${fmt(diff)}</strong>`;
+  }else{
+    sr.className="settle";
+    sr.innerHTML=`<span class="pa">Anette</span> skylder <span class="pb">Bibbi</span> <strong>${fmt(-diff)}</strong>`;
+  }
+
+  // budget check
+  const bb=document.getElementById("budgetBox");
+  const bud=parseFloat(state.tripBudget);
+  if(bud&&bud>0){
+    const diff=bud-grand;
+    bb.className="warnbox show";
+    if(diff>=0){ bb.style.cssText="background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46";
+      bb.textContent=`✓ Innenfor budsjett. Du har ${fmt(diff)} igjen av ${fmt(bud)}.`; }
+    else{ bb.style.cssText="background:#fff7ed;border:1px solid #fed7aa;color:#b45309";
+      bb.textContent=`⚠︎ Over budsjett med ${fmt(-diff)}. Budsjett: ${fmt(bud)}, planlagt: ${fmt(grand)}.`; }
+  }else{ bb.className="warnbox"; }
+
+  // hotel warn (all pinned)
+  const hw=document.getElementById("hotelWarn");
+  const pins=Object.values(state.nights).filter(o=>o&&o.pinned).length;
+  if(N>0&&pins>=N){ hw.className="warnbox show";
+    hw.textContent="Alle netter er låst 📌 – da kan ikke differansen fordeles videre. Lås opp minst én natt for automatisk omfordeling."; }
+  else hw.className="warnbox";
+
+  // transport warn (kun i auto-modus, når alle er låst)
+  const tw=document.getElementById("transWarn");
+  const D=days.length; let tpins=0; for(let i=0;i<D;i++) if(state.transPinned[i]) tpins++;
+  if(state.transAuto&&D>0&&tpins>=D){ tw.className="warnbox show";
+    tw.textContent="Alle dager er låst 📌 – da kan ikke differansen fordeles videre. Lås opp minst én dag for automatisk omfordeling."; }
+  else tw.className="warnbox";
+}
+function fullMonth(m){return ["januar","februar","mars","april","mai","juni","juli","august","september","oktober","november","desember"][m];}
+function escapeHtml(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function linkify(s){
+  return escapeHtml(s||"").replace(/((?:https?:\/\/|www\.)[^\s<]+)/gi, m=>{
+    let url=m, trail="";
+    const tm=url.match(/([)\].,!?;:]+)$/); if(tm){ trail=tm[1]; url=url.slice(0,-trail.length); } // ikke ta med etterfølgende tegn
+    const href=/^https?:\/\//i.test(url)?url:"https://"+url;
+    return `<a href="${href}" target="_blank" rel="noopener" class="note-link">${url}</a>${trail}`;
+  });
+}
+
+/* ---------- hotel image + link ---------- */
+function safeUrl(u){
+  u=(u||"").trim(); if(!u)return "";
+  if(/^https?:\/\//i.test(u))return u;
+  return "https://"+u; // tillat at man bare limer inn uten https://
+}
+function handleImg(i,input){
+  const f=input.files&&input.files[0]; if(!f)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const im=new Image();
+    im.onload=()=>{
+      const max=560; let w=im.width,h=im.height;
+      if(w>max){ h=Math.round(h*max/w); w=max; }
+      const c=document.createElement("canvas"); c.width=w; c.height=h;
+      c.getContext("2d").drawImage(im,0,0,w,h);
+      let data; try{ data=c.toDataURL("image/jpeg",0.72); }catch(err){ data=e.target.result; }
+      state.img[i]=data;
+      if(!save()){ delete state.img[i]; alert("Bildet ble for stort til å lagre. Prøv et mindre bilde, eller bruk bare en lenke."); }
+      render();
+    };
+    im.src=e.target.result;
+  };
+  reader.readAsDataURL(f);
+}
+function removeImg(i){ delete state.img[i]; save(); render(); }
+function openLink(i){ const u=safeUrl(state.link[i]); if(u)window.open(u,"_blank","noopener"); }
+function syncOpenBtn(i){ const b=document.getElementById("open"+i); if(b)b.disabled=!(state.link[i]&&state.link[i].trim()); }
+function setColor(i,val,el){
+  state.color[i]=val; save();
+  const tr=el&&el.closest("tr");
+  if(tr) tr.style.background=(val&&val.toLowerCase()!=="#ffffff")?hexToRgba(val,0.22):"";
+}
+function clearColor(i){ delete state.color[i]; save(); render(); }
+function copyPrevColor(i){
+  if(i<=0)return;
+  const prev=state.color[i-1];
+  if(prev) state.color[i]=prev; else delete state.color[i];
+  save(); render();
+}
+function applyExpand(){
+  const w=document.getElementById("tablewrap"), b=document.getElementById("expandBtn");
+  if(!w)return;
+  w.classList.toggle("expanded",!!state.expanded);
+  if(b)b.textContent=state.expanded?"⤡ Vis i kompakt vindu (med scroll)":"⤢ Vis alle dager (uten scroll)";
+}
+function toggleExpand(){ state.expanded=!state.expanded; save(); applyExpand(); }
+let noteOpen={}, noteEdit={};
+function toggleNote(i){ noteOpen[i]=!noteOpen[i]; if(!noteOpen[i]) noteEdit[i]=false; render(); }
+function toggleNoteEdit(i){
+  noteEdit[i]=!noteEdit[i]; noteOpen[i]=true; render();
+  if(noteEdit[i]){ const ta=document.getElementById("note"+i); if(ta){ ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); } }
+}
+function expandAllNotes(){ const D=nDays(); for(let i=0;i<D;i++) noteOpen[i]=((state.note[i]||"").trim()!==""); render(); }
+function collapseAllNotes(){ noteOpen={}; noteEdit={}; render(); }
+function hexToRgba(hex,a){
+  hex=(hex||"").replace("#",""); if(hex.length===3)hex=hex.split("").map(c=>c+c).join("");
+  const r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16);
+  if([r,g,b].some(isNaN))return "transparent";
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+/* ---------- delt synk (Firebase) ---------- */
+let db=null, docRef=null, cloud=false, applyingRemote=false, cloudTimer=null;
+function cloudConfigured(){ return FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf("LIM_INN")===-1; }
+function setSync(kind){
+  const b=document.getElementById("syncBadge"); if(!b)return;
+  const map={local:["💾 Lokal",""],connecting:["⏳ Kobler til…","off"],
+    live:["🔗 Delt – synket","live"],saved:["✓ Lagret i sky","ok"],off:["⚠︎ Frakoblet (lokal)","off"]};
+  const m=map[kind]||map.local; b.textContent=m[0]; b.className="sync-badge "+m[1];
+}
+function initCloud(){
+  if(!cloudConfigured()||typeof firebase==="undefined"){ setSync("local"); return false; }
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db=firebase.firestore();
+    docRef=db.collection("trips").doc(SHARE_CODE);
+    cloud=true; setSync("connecting");
+    docRef.onSnapshot(snap=>{
+      if(snap.metadata.hasPendingWrites){ setSync("live"); return; }
+      const data=snap.data();
+      if(data&&data.state){
+        try{
+          applyingRemote=true;
+          state=Object.assign(state,JSON.parse(data.state));
+          bindInputs(); applyExpand(); render(); setSync("live");
+        }finally{ applyingRemote=false; }
+      }else{
+        docRef.set({state:JSON.stringify(state),updated:Date.now()}); // første gang: last opp lokal
+      }
+    }, err=>{ console.warn(err); cloud=false; setSync("off"); });
+    return true;
+  }catch(e){ console.warn(e); cloud=false; setSync("off"); return false; }
+}
+function cloudSave(){
+  if(!cloud||applyingRemote)return;
+  clearTimeout(cloudTimer);
+  cloudTimer=setTimeout(()=>{
+    docRef.set({state:JSON.stringify(state),updated:Date.now()})
+      .then(()=>setSync("live")).catch(()=>setSync("off"));
+  },500);
+}
+
+/* ---------- persistence ---------- */
+function save(){
+  let ok=true;
+  try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){ok=false;}
+  cloudSave();
+  return ok;
+}
+function load(){ try{const s=localStorage.getItem(KEY); if(s)state=Object.assign(state,JSON.parse(s));}catch(e){} }
+function resetAll(){ if(confirm("Nullstille alt? Dette sletter alle innlagte verdier.")){ localStorage.removeItem(KEY); location.reload(); } }
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="japan-budsjett.json"; a.click();
+}
+function importData(ev){
+  const f=ev.target.files[0]; if(!f)return; const r=new FileReader();
+  r.onload=()=>{ try{ state=Object.assign(state,JSON.parse(r.result)); bindInputs(); save(); render(); }catch(e){alert("Kunne ikke lese filen.");} };
+  r.readAsText(f);
+}
+
+/* ---------- input bindings ---------- */
+function bindInputs(){
+  const map={startDate:"startDate",endDate:"endDate",travelers:"travelers",tripBudget:"tripBudget",generalNight:"generalNight",generalTransport:"generalTransport"};
+  for(const id in map){ const el=document.getElementById(id); if(el)el.value=state[map[id]]; }
+}
+function wire(){
+  ["startDate","endDate"].forEach(id=>document.getElementById(id).addEventListener("change",e=>{
+    state[id]=e.target.value; save(); render(); }));
+  document.getElementById("travelers").addEventListener("input",e=>{state.travelers=e.target.value;save();render();});
+  document.getElementById("tripBudget").addEventListener("input",e=>{state.tripBudget=e.target.value;save();render();});
+  document.getElementById("generalNight").addEventListener("input",e=>{state.generalNight=e.target.value;save();});
+  document.getElementById("hotelTotal").addEventListener("change",e=>{setHotelTotalDirect(parseFloat(e.target.value)||0);});
+  document.getElementById("generalTransport").addEventListener("input",e=>{state.generalTransport=e.target.value;save();});
+  document.getElementById("transportTotal").addEventListener("change",e=>{setTransportTotalDirect(parseFloat(e.target.value)||0);});
+  document.getElementById("transAuto").addEventListener("change",e=>{state.transAuto=e.target.checked;save();render();});
+}
+
+/* ---------- init ---------- */
+load(); bindInputs(); wire();
+if(Object.keys(state.nights).length===0){ applyGeneral(); } else { render(); }
+applyExpand();
+initCloud();
+</script>
+</body>
+</html>
