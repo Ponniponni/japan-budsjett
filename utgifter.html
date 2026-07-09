@@ -87,7 +87,7 @@
     60%{transform:rotate(-4deg)}80%{transform:rotate(2.5deg)}}
 
   /* Snakkeboble fra katten */
-  .cat-bubble{position:absolute;right:14px;bottom:138px;max-width:74%;z-index:4;
+  .cat-bubble{position:absolute;right:64px;top:4px;max-width:76%;z-index:4;
     background:var(--card);border:1.5px solid var(--accent);border-radius:18px 18px 4px 18px;
     padding:12px 15px;font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.5;
     box-shadow:var(--shadow);opacity:0;transform:scale(.75) translateY(8px);
@@ -668,7 +668,7 @@ $("heroCat").addEventListener("click", ()=>{
     b.innerHTML = '<span class="paw">🐾 </span>' + CAT_FACTS[i];
     b.classList.add("show");
   }, 380);
-  bubbleTimer = setTimeout(()=> b.classList.remove("show"), 11000);
+  bubbleTimer = setTimeout(()=> b.classList.remove("show"), 20000);
 });
 $("catBubble").addEventListener("click", ()=>{
   $("catBubble").classList.remove("show");
