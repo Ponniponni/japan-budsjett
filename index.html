@@ -533,10 +533,9 @@
         <div><div class="lbl">Total hotellbudsjett</div><div class="field" id="bHotelTotal" style="background:var(--card2);color:var(--muted)">–</div></div>
       </div>
       <div class="b-toolbar">
-        <button type="button" class="b-btn" id="bHotelApply">Bruk på alle netter</button>
         <button type="button" class="b-btn" id="bHotelSpread">Behold låste 📌, fordel resten</button>
       </div>
-      <p class="b-hint">«Bruk på alle netter» setter alle nettene til generell pris (og låser opp alt). «Behold låste, fordel resten» bruker generell pris × antall netter som total, og fordeler resten på de ulåste nettene.</p>
+      <p class="b-hint">«Behold låste, fordel resten» bruker generell pris × antall netter som total, beholder de låste nettene uendret, og fordeler resten på de ulåste nettene.</p>
     </section>
 
     <section class="card">
@@ -1722,7 +1721,6 @@ $("bTripBudget").addEventListener("input", ()=>{ bState.tripBudget = $("bTripBud
 $("bGenNight").addEventListener("input", ()=>{ bState.generalNight = $("bGenNight").value; bSave(); });
 $("bGenTrans").addEventListener("input", ()=>{ bState.generalTransport = $("bGenTrans").value; bSave(); });
 $("bTransAuto").addEventListener("change", ()=>{ bState.transAuto = $("bTransAuto").checked; bSave(); });
-$("bHotelApply").addEventListener("click", bApplyGeneralNight);
 $("bHotelSpread").addEventListener("click", bSpreadHotelKeepPinned);
 $("bTransApply").addEventListener("click", bApplyGeneralTransport);
 $("bToggleAllDetails").addEventListener("click", ()=>{
