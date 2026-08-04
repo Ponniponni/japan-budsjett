@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#181014">
+<meta name="theme-color" content="#fdf3f7">
 <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
 <link rel="icon" type="image/png" href="icon.png">
 <meta name="apple-mobile-web-app-title" content="Japan 2026">
@@ -166,6 +166,14 @@
   .peach{display:inline-block;font-size:21px;animation:wiggle .7s ease-in-out infinite;transform-origin:50% 80%}
   @keyframes wiggle{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
 
+  /* Fersken-varsel som kan vises uansett hvilken fane man er på */
+  .peach-toast-float{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));z-index:60;
+    display:flex;align-items:center;gap:9px;background:var(--card);border:1.5px solid var(--pb);color:var(--pb);
+    padding:11px 18px;border-radius:99px;font-size:13.5px;font-weight:750;box-shadow:var(--shadow);
+    opacity:0;transform:translate(-50%,-14px) scale(.92);pointer-events:none;
+    transition:opacity .22s ease, transform .28s cubic-bezier(.3,1.4,.5,1);white-space:nowrap}
+  .peach-toast-float.show{opacity:1;transform:translate(-50%,0) scale(1)}
+
   /* Risting når betaler mangler */
   .payer-row.attn{animation:shake .35s}
   .payer-row.attn .payer-btn{border-color:var(--accent)}
@@ -317,6 +325,93 @@
   footer{margin-top:26px;text-align:center;font-size:11.5px;color:var(--muted)}
   footer a{color:var(--muted);text-decoration:underline;cursor:pointer}
   footer .sep{margin:0 6px;opacity:.5}
+
+  /* ===== Budsjett ===== */
+  .b-row{display:flex;gap:9px;margin-bottom:12px}
+  .b-row .field{flex:1;margin-bottom:0}
+  .b-2col{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+  .b-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .b-btn{border:1.5px solid var(--line);background:var(--card2);color:var(--ink);border-radius:11px;
+    padding:9px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;flex:1;min-width:130px}
+  .b-btn:active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .b-check{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);font-weight:650;margin:10px 2px 2px}
+  .b-hint{font-size:12px;color:var(--muted);margin:8px 2px 2px;line-height:1.5}
+
+  .bday-card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:14px 15px;margin-bottom:9px;box-shadow:var(--shadow);transition:background .15s,border-color .15s}
+  .bday-card.tinted{border-width:1.5px}
+  .bday-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;gap:8px}
+  .bday-date{font-size:13.5px;font-weight:750}
+  .bday-date span{color:var(--accent)}
+  .bday-sum{font-size:13px;font-weight:700;color:var(--accent);white-space:nowrap}
+  .bday-card .field{margin-bottom:9px}
+  .bday-body{display:flex;gap:11px;margin-bottom:9px}
+  .bday-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+  .bday-fields .field{margin-bottom:0}
+  .bday-photo-sq{position:relative;flex:0 0 auto;width:108px;height:108px;border-radius:18px;cursor:pointer;
+    border:1px solid var(--line);overflow:hidden;background:var(--card2)}
+  .bday-photo-sq img{width:100%;height:100%;object-fit:cover;display:block}
+  .bday-photo-sq .cam{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:30px;color:var(--muted)}
+  .bday-photo-sq .cam-badge{position:absolute;right:5px;bottom:5px;width:24px;height:24px;border-radius:50%;
+    background:var(--accent);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
+  .bday-photo-sq .cam-badge svg{width:12px;height:12px}
+  .bday-photo-sq .photo-del{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;
+    background:rgba(0,0,0,.55);color:#fff;font-size:11px;border:0;display:flex;align-items:center;justify-content:center;padding:0}
+  .bday-linkrow{display:flex;gap:7px;align-items:center;margin-bottom:9px}
+  .bday-linkrow .field{margin-bottom:0;flex:1;min-width:0}
+  .icon-btn{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--line);
+    background:var(--card2);color:var(--ink);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;padding:0}
+  .icon-btn svg{width:17px;height:17px}
+  .icon-btn:active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .icon-btn.has-color{border-color:var(--bcolor,var(--line));background:color-mix(in srgb, var(--bcolor,transparent) 30%, var(--card2))}
+  .bday-amtline{display:flex;align-items:center;gap:6px}
+  .bday-amtline .ico{flex:0 0 auto;font-size:14px;width:16px;text-align:center}
+  .bday-amtline input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:9px;background:var(--card2);
+    color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;padding:6px 7px;outline:0;
+    font-variant-numeric:tabular-nums}
+  .bday-amtline input:focus{border-color:var(--accent)}
+  .pin-btn{flex:0 0 auto;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);
+    background:var(--card2);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    color:var(--muted);padding:0}
+  .pin-btn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .who-mini{flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);
+    background:var(--card2);color:var(--muted);font-size:10.5px;font-weight:750;cursor:pointer;
+    font-family:inherit;padding:0;display:flex;align-items:center;justify-content:center}
+  .who-mini.a.on{background:var(--pa);border-color:var(--pa);color:#fff}
+  .who-mini.b.on{background:var(--pb);border-color:var(--pb);color:#fff}
+  .swatches{display:flex;gap:7px;align-items:center;margin-bottom:9px;flex-wrap:wrap}
+  .swatch{width:23px;height:23px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;flex:0 0 auto}
+  .swatch.on{border-color:var(--ink)}
+  .swatch-custom{position:relative;width:23px;height:23px;border-radius:50%;flex:0 0 auto;cursor:pointer;
+    background:conic-gradient(red,orange,yellow,lime,cyan,blue,violet,red);border:2px solid transparent}
+  .swatch-custom.on{border-color:var(--ink)}
+  .swatch-custom input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;padding:0;border:0}
+
+  /* Farge-popup */
+  .color-grid{display:flex;flex-wrap:wrap;gap:12px;margin:4px 0 18px}
+  .color-grid .swatch{width:34px;height:34px}
+  .color-grid .swatch-custom{width:34px;height:34px}
+  .bday-note-toggle{width:100%;text-align:left;background:transparent;border:0;color:var(--accent);
+    font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;padding:2px 2px 0;
+    display:flex;align-items:center;gap:5px}
+  .bday-note-toggle .note-ico svg{width:14px;height:14px;vertical-align:-2px}
+  .bday-note-toggle .chev-svg{width:14px;height:14px;transition:transform .18s}
+  .bday-card.noteopen .bday-note-toggle .chev-svg{transform:rotate(180deg)}
+  .bday-note-body{display:none;margin-top:9px}
+  .bday-card.noteopen .bday-note-body{display:block}
+  .b-mini-btn{border:1.5px solid var(--line);background:var(--card2);color:var(--ink);border-radius:9px;
+    padding:7px 11px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
+
+  .other-item{display:flex;align-items:center;gap:9px;background:var(--card2);border:1px solid var(--line);
+    border-radius:13px;padding:10px 11px;margin-bottom:8px}
+  .other-item .oi-mid{flex:1;min-width:0}
+  .other-item .oi-name{font-size:13.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .other-item .oi-meta{font-size:11px;color:var(--muted);margin-top:1px}
+  .other-item .oi-amt{font-size:13.5px;font-weight:750;font-variant-numeric:tabular-nums;flex:0 0 auto}
+  .other-item .del{flex:0 0 auto;width:26px;height:26px;border:0;border-radius:99px;background:var(--card);
+    color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
 </style>
 </head>
 <body>
@@ -408,6 +503,94 @@
     </footer>
   </div>
 
+  <!-- ============ SIDE: BUDSJETT ============ -->
+  <div class="page" id="page-budsjett">
+    <div class="title-row">
+      <div class="page-title">Budsjett 🎒</div>
+      <button class="theme-btn pg" aria-label="Bytt tema">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3 19 19M19 5l-1.7 1.7M6.7 17.3 5 19"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+      </button>
+    </div>
+    <p class="page-sub" id="bTripSub">Planlegging av reisen.</p>
+
+    <section class="card">
+      <h2>Innstillinger</h2>
+      <div class="b-2col">
+        <div><div class="lbl">Ankomst</div><input class="field" type="date" id="bStart"></div>
+        <div><div class="lbl">Avreise</div><input class="field" type="date" id="bEnd"></div>
+      </div>
+      <div class="b-2col" style="margin-bottom:2px">
+        <div><div class="lbl">Antall reisende</div><input class="field" type="number" id="bTravelers" min="1"></div>
+        <div><div class="lbl">Totalt reisebudsjett (valgfritt)</div><input class="field" type="number" id="bTripBudget" placeholder="kr"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>🏨 Hotell</h2>
+      <div class="b-2col">
+        <div><div class="lbl">Generell pris/natt (kr)</div><input class="field" type="number" id="bGenNight"></div>
+        <div><div class="lbl">Total hotellbudsjett</div><div class="field" id="bHotelTotal" style="background:var(--card2);color:var(--muted)">–</div></div>
+      </div>
+      <div class="b-toolbar">
+        <button type="button" class="b-btn" id="bHotelApply">Bruk på alle netter</button>
+        <button type="button" class="b-btn" id="bHotelSpread">Behold låste 📌, fordel resten</button>
+      </div>
+      <p class="b-hint">«Bruk på alle netter» setter alle nettene til generell pris (og låser opp alt). «Behold låste, fordel resten» bruker generell pris × antall netter som total, og fordeler resten på de ulåste nettene.</p>
+    </section>
+
+    <section class="card">
+      <h2>🚄 Transport</h2>
+      <div class="b-2col">
+        <div><div class="lbl">Generell transport/dag (kr)</div><input class="field" type="number" id="bGenTrans"></div>
+        <div><div class="lbl">Total transportbudsjett</div><div class="field" id="bTransTotal" style="background:var(--card2);color:var(--muted)">–</div></div>
+      </div>
+      <div class="b-toolbar">
+        <button type="button" class="b-btn" id="bTransApply">Bruk på alle dager</button>
+      </div>
+      <label class="b-check"><input type="checkbox" id="bTransAuto"> Automatisk fordeling – hold totalbudsjettet fast (lås dager med 📌)</label>
+    </section>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:20px 4px 2px">
+      <h2 style="margin:0">📅 Dag for dag</h2>
+      <button type="button" class="b-mini-btn" id="bToggleAllDetails">Vis notater</button>
+    </div>
+    <div id="bDayList"></div>
+
+    <section class="card" style="margin-top:18px">
+      <h2>🎟 Andre utgifter</h2>
+      <div id="bOtherList"></div>
+      <button type="button" class="btn btn-primary" id="bAddOther" style="width:100%">+ Legg til utgift</button>
+    </section>
+
+    <section class="card" style="margin-top:18px">
+      <h2>💴 Oppsummering</h2>
+      <div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:14px">
+        <div class="stat"><div class="label">Hotell</div><div class="val" id="bSumHotel" style="font-size:15px">–</div></div>
+        <div class="stat"><div class="label">Transport</div><div class="val" id="bSumTransport" style="font-size:15px">–</div></div>
+        <div class="stat"><div class="label">Andre</div><div class="val" id="bSumOther" style="font-size:15px">–</div></div>
+      </div>
+      <div class="stats-grid" style="grid-template-columns:1.4fr 1fr 1fr">
+        <div class="stat big"><div class="label">Totalt</div><div class="val" id="bSumTotal">–</div></div>
+        <div class="stat"><div class="label">Pr person</div><div class="val" id="bSumPerson" style="font-size:16px">–</div></div>
+        <div class="stat"><div class="label">Snitt/dag</div><div class="val" id="bSumPerDay" style="font-size:16px">–</div></div>
+      </div>
+    </section>
+
+    <section class="card" id="bSettleCard">
+      <h2>Hvem har betalt hva</h2>
+      <p class="b-hint" style="margin:0 0 10px">Basert på Anette/Bibbi-markeringene på hotell, transport og andre utgifter. Marker begge for å dele likt.</p>
+      <div class="settle-row"><span class="who"><span class="dot a"></span>Anette har lagt ut</span><span class="amt" id="bPaidA">0 kr</span></div>
+      <div class="settle-row"><span class="who"><span class="dot b"></span>Bibbi har lagt ut</span><span class="amt" id="bPaidB">0 kr</span></div>
+      <div class="settle-verdict even" id="bVerdict">Dere er skuls 🎌</div>
+    </section>
+
+    <footer>
+      <a id="bExportBtn">Eksporter sikkerhetskopi</a><span class="sep">·</span><a id="bImportBtn">Importer</a><span class="sep">·</span><a id="bPrintBtn">Skriv ut</a><span class="sep">·</span><a id="bResetBtn">Nullstill</a>
+      <input type="file" id="bImportFile" accept=".json" hidden>
+    </footer>
+  </div>
+
   <!-- ============ SIDE: FRASER ============ -->
   <div class="page" id="page-fraser">
     <div class="title-row">
@@ -448,10 +631,16 @@
 </div>
 
 <!-- Tab-bar -->
+<div class="peach-toast-float" id="peachToastFloat"><span class="peach">🍑</span>Du har finest rumpe</div>
+
 <nav class="tabbar">
   <button class="tab on" data-page="hjem">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h13a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H4"/><circle cx="15.5" cy="13.5" r="1.1" fill="currentColor" stroke="none"/></svg>
     <span>Utgifter</span>
+  </button>
+  <button class="tab" data-page="budsjett">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14a1 1 0 0 1 1 1v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v2"/><circle cx="16.5" cy="13.5" r="1.1" fill="currentColor" stroke="none"/></svg>
+    <span>Budsjett</span>
   </button>
   <button class="tab" data-page="fraser">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.38-4.1-1.05L3 20l1.05-5.4A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.5 10h7M8.5 13.5h4.5"/></svg>
@@ -478,6 +667,19 @@
     <div class="form-actions">
       <button class="btn btn-ghost" id="rateFetchBtn">↻ Hent nå</button>
       <button class="btn btn-primary" id="rateCloseBtn">Ferdig</button>
+    </div>
+  </div>
+</div>
+
+<!-- Farge-ark (dag-kort i budsjettet) -->
+<div class="overlay" id="colorOverlay">
+  <div class="sheet">
+    <h3 id="colorSheetTitle">🎨 Farge</h3>
+    <p class="note">Marker dagen med en farge – hele kortet fargelegges.</p>
+    <div class="color-grid" id="colorGrid"></div>
+    <button type="button" class="today-btn" id="colorPrevBtn" style="margin-bottom:14px">Samme farge som forrige dag</button>
+    <div class="form-actions">
+      <button class="btn btn-primary" id="colorCloseBtn">Ferdig</button>
     </div>
   </div>
 </div>
@@ -524,7 +726,11 @@ const PHRASES = [
     ["Jeg forstår ikke","わかりません","wakarimasen","va-ka-ri-ma-sen"],
     ["Snakker du engelsk?","英語を話せますか？","eigo o hanasemasu ka?","ei-gå å ha-na-se-mass ka"],
     ["Hyggelig å møte deg","はじめまして","hajimemashite","ha-dsji-me-masj-te"],
-    ["Ha det","さようなら","sayōnara","sa-jåå-na-ra"]
+    ["Ha det","さようなら","sayōnara","sa-jåå-na-ra"],
+    ["Beklager","ごめんなさい","gomen'nasai","gå-men-na-sai"],
+    ["Kan du hjelpe meg?","手伝ってもらえますか？","tetsudatte moraemasu ka?","te-tsu-dat-te må-ra-e-mass ka"],
+    ["Hva er klokka?","何時ですか？","nanji desu ka?","nan-dji dess ka"],
+    ["Jeg heter …","私の名前は…です","watashi no namae wa … desu","va-ta-sji nå na-ma-e va … dess"]
   ]],
   ["🍜 Mat & restaurant", [
     ["To personer, takk","二人です","futari desu","fu-ta-ri dess"],
@@ -535,7 +741,10 @@ const PHRASES = [
     ["Regningen, takk","お会計お願いします","o-kaikei onegai shimasu","å-kai-kei å-ne-gai sji-mass"],
     ["Det var nydelig","おいしかったです","oishikatta desu","åi-sji-kat-ta dess"],
     ["Takk for maten","ごちそうさまでした","gochisōsama deshita","gå-tsji-såå-sa-ma desj-ta"],
-    ["Skål!","乾杯！","kanpai!","kam-pai"]
+    ["Skål!","乾杯！","kanpai!","kam-pai"],
+    ["Ett glass vin, takk","ワインを一杯ください","wain o ippai kudasai","va-in å ip-pai ku-da-sai"],
+    ["Hvor er toalettet?","トイレはどこですか？","toire wa doko desu ka?","tåi-re va då-kå dess ka"],
+    ["Unnskyld, kan jeg få … ? (fyll inn selv)","すみません、＿＿をください","sumimasen, ___ o kudasai","su-mi-ma-sen, ___ å ku-da-sai"]
   ]],
   ["🛍️ Shopping", [
     ["Hvor mye koster det?","いくらですか？","ikura desu ka?","i-ku-ra dess ka"],
@@ -543,14 +752,20 @@ const PHRASES = [
     ["Kan jeg prøve den?","試着できますか？","shichaku dekimasu ka?","sji-tsja-ku de-ki-mass ka"],
     ["Har du større / mindre størrelse?","大きい／小さいサイズはありますか？","ōkii / chiisai saizu wa arimasu ka?","åå-kii / tsjii-sai sai-zu va a-ri-mass ka"],
     ["Jeg tar denne","これにします","kore ni shimasu","kå-re ni sji-mass"],
-    ["Bare ser, takk","見ているだけです","mite iru dake desu","mi-te i-ru da-ke dess"]
+    ["Bare ser, takk","見ているだけです","mite iru dake desu","mi-te i-ru da-ke dess"],
+    ["Har dere tax-free?","免税できますか？","menzei dekimasu ka?","men-zei de-ki-mass ka"],
+    ["Kan jeg få en kvittering?","レシートをください","reshīto o kudasai","re-sjii-tå å ku-da-sai"],
+    ["Det er litt for dyrt","少し高いです","sukoshi takai desu","su-kå-sji ta-kai dess"]
   ]],
   ["🚄 Transport & veibeskrivelse", [
     ["Hvor er stasjonen?","駅はどこですか？","eki wa doko desu ka?","e-ki va då-kå dess ka"],
     ["Hvor er toalettet?","トイレはどこですか？","toire wa doko desu ka?","tåi-re va då-kå dess ka"],
     ["Går dette toget til …?","この電車は…に行きますか？","kono densha wa … ni ikimasu ka?","kå-nå den-sja va … ni i-ki-mass ka"],
     ["Én billett til …, takk","…までの切符をください","… made no kippu o kudasai","… ma-de nå kip-pu å ku-da-sai"],
-    ["Stopp her, takk (taxi)","ここで止めてください","koko de tomete kudasai","kå-kå de tå-me-te ku-da-sai"]
+    ["Stopp her, takk (taxi)","ここで止めてください","koko de tomete kudasai","kå-kå de tå-me-te ku-da-sai"],
+    ["Hvor kjøper jeg billett?","切符はどこで買えますか？","kippu wa doko de kaemasu ka?","kip-pu va då-kå de ka-e-mass ka"],
+    ["Hvilket spor/perrong?","何番線ですか？","nanban-sen desu ka?","nan-ban-sen dess ka"],
+    ["Er dette setet ledig?","この席は空いていますか？","kono seki wa aiteimasu ka?","kå-nå se-ki va ai-te-i-mass ka"]
   ]],
   ["💗 Nyttig ellers", [
     ["Kan du ta et bilde av oss?","写真を撮ってもらえますか？","shashin o totte moraemasu ka?","sja-sjin å tåt-te må-ra-e-mass ka"],
@@ -559,6 +774,10 @@ const PHRASES = [
     ["Jeg er fra Norge","ノルウェーから来ました","Noruē kara kimashita","nå-ru-ee ka-ra ki-masj-ta"],
     ["Jeg har gått meg bort","道に迷いました","michi ni mayoimashita","mi-tsji ni ma-jåi-masj-ta"],
     ["Hjelp!","助けて！","tasukete!","tas-ke-te"],
+    ["Hvor er nærmeste apotek?","近くの薬局はどこですか？","chikaku no yakkyoku wa doko desu ka?","tsji-ka-ku nå jak-kjå-ku va då-kå dess ka"],
+    ["Jeg trenger en lege","医者が必要です","isha ga hitsuyō desu","i-sja ga hi-tsu-jåå dess"],
+    ["Har dere wifi?","WiFiはありますか？","waifai wa arimasu ka?","vai-fai va a-ri-mass ka"],
+    ["Kan jeg lade telefonen her?","ここで携帯を充電できますか？","koko de keitai o jūden dekimasu ka?","kå-kå de kei-tai å djuu-den de-ki-mass ka"],
     ["Du har finest rumpe 🍑","あなたのお尻が一番すてきです","anata no oshiri ga ichiban suteki desu","a-na-ta nå å-sji-ri ga i-tsji-ban su-te-ki dess"]
   ]]
 ];
@@ -595,8 +814,8 @@ function applyTheme(t){
   const m = document.querySelector('meta[name="theme-color"]');
   if(m) m.content = t==="light" ? "#fdf3f7" : "#181014";
 }
-let theme = "dark";
-try{ theme = localStorage.getItem(THEME_KEY) || "dark"; }catch(e){}
+let theme = "light";
+try{ theme = localStorage.getItem(THEME_KEY) || "light"; }catch(e){}
 applyTheme(theme);
 document.querySelectorAll(".theme-btn").forEach(b=> b.addEventListener("click", ()=>{
   theme = theme==="light" ? "dark" : "light";
@@ -654,7 +873,47 @@ const CAT_FACTS = [
   "I Yokohama ligger et helt museum viet bare til ramen. 🍜",
   "Japan kjører på venstre side av veien – se deg ekstra godt for! 🚗",
   "Shinkansens spisse nese er inspirert av isfuglens nebb – for å fly stille ut av tunnelene. 🐦",
-  "Mange steder regnes det som uhøflig å spise mens man går på gaten. Sett deg ned og nyt! 🍡"
+  "Mange steder regnes det som uhøflig å spise mens man går på gaten. Sett deg ned og nyt! 🍡",
+  "Fushimi Inari-helligdommen i Kyoto har over 10 000 røde torii-porter i en tunnel opp fjellet. ⛩️",
+  "Shibuya-krysset var et av verdens første store fotgjengerkryss der biler stopper fra alle kanter samtidig. 🚦",
+  "Konbini (nærbutikkene) kan skrive ut dokumenter, betale regninger og til og med sende bagasjen din videre til neste hotell. 🏪",
+  "Automatene i Japan selger alt fra varm kaffe på boks til friske egg, paraplyer og blomster. ☂️",
+  "Ordet «karaoke» er japansk og betyr «tomt orkester» – kara (tom) + oke (orkester). 🎤",
+  "Sumobryting er over 1500 år gammelt og startet som en shinto-seremoni for å underholde gudene. 🤼",
+  "Før du går ned i et onsen (varm kilde), må du dusje og skylle deg grundig – å hoppe uti skitten regnes som svært uhøflig. 🧼",
+  "Uji nær Kyoto er ett av Japans mest kjente områder for dyrking av matcha. 🍵",
+  "En tradisjonell te-seremoni kan ta opptil fire timer og følger regler som er hundrevis av år gamle. 🍵",
+  "Origami – kunsten å brette papir – skal ha oppstått i Japan for over tusen år siden. 🕊️",
+  "Kirsebærblomstringen varer som regel bare én til to uker – derfor er hanami (blomsterpicknick) så høyt verdsatt. 🌸",
+  "Hver vår følger japansk TV kirsebærblomstringen med et eget «blomstervarsel», nesten som værmeldingen. 🌸📺",
+  "I Jigokudani-parken i Nagano bader ville snømonkeys i varme kilder om vinteren. 🐒♨️",
+  "Nintendo ble startet i 1889 – ikke som spillselskap, men som produsent av håndlagde japanske spillkort (hanafuda). 🃏",
+  "Akihabara i Tokyo regnes som verdens hovedstad for elektronikk, anime og manga. 🕹️",
+  "Manga utgjør nesten en firedel av alt trykt materiale som selges i Japan hvert år. 📚",
+  "Det første kapselhotellet åpnet i Osaka i 1979 – gjestene sover i stablede kapsler akkurat store nok til en seng. 🛏️",
+  "Det regnes som god skikk å slurpe ramen og soba høyt – det kjøler ned nudlene og viser at maten smaker. 🍜",
+  "Spisepinner skal aldri stå oppreist i en risskål – det minner om en begravelsesritual og bringer uflaks. 🥢",
+  "Å pusse nesen høylytt offentlig regnes som uhøflig i Japan – de fleste snufser diskré i stedet. 🤧",
+  "På japanske tog er det vanlig å sette mobilen på lydløs – togvognene er ofte påfallende stille. 🤫",
+  "Noen togselskaper måler forsinkelser i sekunder, ikke minutter. ⏱️",
+  "I Japan er det i dag flere kjæledyr enn barn under 15 år. 🐕",
+  "Over 1 av 10 japanere er 80 år eller eldre – Japan har en av verdens eldste befolkninger. 👴",
+  "Den tradisjonelle japanske kalenderen deler året inn i 24 små «mikrosesonger», fra «insektene våkner» til «frosten faller». 🍁",
+  "På myndighetsdagen i januar kler tjueåringer seg i kimono og furisode for å markere voksenlivet. 👘",
+  "Shichi-Go-San er en høytid der barn på tre, fem og sju år kler seg i tradisjonelle klær og besøker en helligdom. 🎎",
+  "Nyttår (Oshogatsu) er Japans største høytid – mange besøker en helligdom de første dagene i januar for lykke (hatsumode). ⛩️🎍",
+  "Historien om meg – lykkekatten maneki-neko – skal stamme fra en tempelkatt som reddet en herremann fra et lynnedslag. ⚡🐾",
+  "Ris var så verdifullt i gamle Japan at det ble brukt som en form for valuta og lønn til samuraier. 🌾",
+  "Japan har over 100 aktive vulkaner – blant de fleste i noe land i verden. 🌋",
+  "Okinawa i Sør-Japan er kjent som en av verdens «blå soner», der folk ofte lever uvanlig lenge og friskt. 🏝️",
+  "Japan produserer en stor andel av verdens animerte TV-serier – anime eksporteres til hele verden. 🎬",
+  "Studio Ghibli er så elsket i Japan at flere byer har egne museer og statuer viet Totoro og de andre filmfigurene. 🐰",
+  "Byggeforskriftene i Japan er laget for at skyskrapere skal svaie trygt under jordskjelv i stedet for å kollapse. 🏢",
+  "Shinkansen har fraktet milliarder av passasjerer siden 1964 uten en eneste passasjer omkommet i en kollisjon eller avsporing. 🚄",
+  "Purikura – morsomme fotoautomater med klistremerker – ble en stor greie i Japan på 1990-tallet og er fortsatt populære. 📸",
+  "Ordtaket «syv ganger ned, åtte ganger opp» er et kjent japansk uttrykk om å alltid reise seg igjen etter motgang. 🌊",
+  "Kabuki-teater er kjent for sin praktfulle sminke og kostymer, og har vært en av Japans store scenekunstformer siden tidlig 1600-tall. 🎭",
+  "Fugu (blåsefisk) må tilberedes av spesialutdannede kokker med eget sertifikat – fisken er dødelig giftig hvis den kuttes feil. 🐡"
 ];
 let lastFact = -1, bubbleTimer = null;
 $("heroCat").addEventListener("click", ()=>{
@@ -895,6 +1154,14 @@ function showPeach(){
   clearTimeout(peachTimer);
   peachTimer = setTimeout(()=> t.classList.remove("show"), 2600);
 }
+/* Samme fersken-hilsen, men som en flytende boks som er synlig uansett hvilken fane man er på */
+let peachFloatTimer = null;
+function showPeachFloat(){
+  const t = $("peachToastFloat");
+  t.classList.add("show");
+  clearTimeout(peachFloatTimer);
+  peachFloatTimer = setTimeout(()=> t.classList.remove("show"), 2600);
+}
 $("payerChips").addEventListener("click", e=>{
   const b = e.target.closest("[data-payer]");
   if(b){
@@ -1000,7 +1267,7 @@ function buildPhrases(){
   const chev = '<span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>';
   const spk = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6.5 9H3v6h3.5L11 19V5z" fill="currentColor" stroke="none"/><path d="M15 9.2a4.2 4.2 0 0 1 0 5.6M17.7 6.6a8 8 0 0 1 0 10.8"/></svg>';
   $("phraseList").innerHTML = PHRASES.map((g,gi)=>
-    '<div class="ph-group'+(gi===0?' open':'')+'">'+
+    '<div class="ph-group">'+
     '<button type="button" class="ph-h">'+g[0]+'<span class="cnt">'+g[1].length+'</span>'+chev+'</button>'+
     '<div class="ph-body">'+
     g[1].map((p,pi)=>
@@ -1140,6 +1407,468 @@ $("importFile").addEventListener("change", async e=>{
   e.target.value = "";
 });
 
+/* ====================================================================
+   BUDSJETT – lagres i samme Firestore-dokument (trips/SHARE_CODE) som
+   den opprinnelige budsjettsiden brukte, slik at alt dere har lagt inn
+   der blir med videre. Feltnavnene under matcher det dokumentet.
+   ==================================================================== */
+const B_KEY = "japan_budget_2026_v1";
+const FULL_MONTH = ["januar","februar","mars","april","mai","juni","juli","august","september","oktober","november","desember"];
+let bState = {
+  startDate:"2026-10-19", endDate:"2026-11-19", travelers:2, tripBudget:"",
+  generalNight:1200, generalTransport:200, transAuto:false,
+  nights:{}, transport:{}, transPinned:{},
+  other:[], note:{}, place:{}, img:{}, link:{}, color:{},
+  who:{}, whoT:{}, expanded:false
+};
+let bOtherIdSeq = 1;
+let bDetailsOpen = {}, bAllDetailsOpen = false;
+let bRef = null, bApplyingRemote = false, bCloudTimer = null;
+const SWATCHES = ["", "#f7c8dc", "#ffe1b8", "#c9e8d4", "#c9dcf4", "#e3cdf0"];
+let colorEditIndex = null;
+const ICO_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>';
+const ICO_EYEDROP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m17.4 3.6 3 3L18 9l-3-3zM15.5 5.5 5 16v3h3L18.5 8.5"/><path d="M2 22l4.5-4.5"/></svg>';
+const ICO_NOTE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>';
+const ICO_CAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a1 1 0 0 1 1-1h2.2l.9-1.6A1 1 0 0 1 9 5h6a1 1 0 0 1 .9.6L16.8 7H19a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><circle cx="12" cy="13" r="3.4"/></svg>';
+
+function bParseD(s){ const [y,m,d] = (s||"2026-01-01").split("-").map(Number); return new Date(y, (m||1)-1, d||1); }
+function bISO(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function bDayISO(i){ const d = bParseD(bState.startDate); d.setDate(d.getDate()+i); return bISO(d); }
+function bNDays(){
+  const a = bParseD(bState.startDate), b = bParseD(bState.endDate);
+  return Math.max(1, Math.round((b-a)/864e5)+1);
+}
+function bNNights(){ return Math.max(0, bNDays()-1); }
+function bFmtDayDate(iso){
+  const d = new Date(iso+"T12:00:00");
+  return d.toLocaleDateString("nb-NO",{weekday:"short", day:"numeric", month:"short"});
+}
+function bHotelAmt(i){ return (bState.nights[i] && bState.nights[i].price) || 0; }
+function bHotelPinned(i){ return !!(bState.nights[i] && bState.nights[i].pinned); }
+function bTransAmt(i){ return bState.transport[i] || 0; }
+function bHotelTotal(){ let s=0; for(let i=0;i<bNNights();i++) s+=bHotelAmt(i); return s; }
+function bTransTotal(){ let s=0; for(let i=0;i<bNDays();i++) s+=bTransAmt(i); return s; }
+function bOtherTotal(){ return bState.other.reduce((s,o)=>s+(+o.amount||0),0); }
+function bGrandTotal(){ return bHotelTotal()+bTransTotal()+bOtherTotal(); }
+function bSplitWho(amt, w){
+  w = w || {};
+  if(w.a && !w.b) return {a:amt, b:0};
+  if(w.b && !w.a) return {a:0, b:amt};
+  return {a:amt/2, b:amt/2}; /* begge markert, eller ingen -> deles likt */
+}
+
+/* ---------- skriving ---------- */
+function bSaveLocal(){ try{ localStorage.setItem(B_KEY, JSON.stringify(bState)); }catch(e){} }
+function bSaveCloud(){
+  if(!bRef || bApplyingRemote) return;
+  clearTimeout(bCloudTimer);
+  bCloudTimer = setTimeout(()=>{
+    fbSetDoc(bRef, {state: JSON.stringify(bState), updated: Date.now()}).catch(()=>{});
+  }, 500);
+}
+function bSave(){ bSaveLocal(); bSaveCloud(); bRender(); }
+/* Lett lagring for tekstfelt inni dag-/utgiftslistene: oppdaterer IKKE listenes
+   DOM (unngår at inputfeltet mister fokus midt i skriving). */
+function bLightSave(){ bSaveLocal(); bSaveCloud(); }
+/* Lagring for tall som påvirker summer, uten å bygge om selve listene. */
+function bNumericSave(dayIndex){
+  bSaveLocal(); bSaveCloud(); bRecalcTotals();
+  if(dayIndex!=null){
+    const badge = document.querySelector('.bday-card[data-i="'+dayIndex+'"] .bday-sum');
+    if(badge){
+      const isLast = dayIndex>=bNNights();
+      const h = isLast?0:bHotelAmt(dayIndex);
+      const others = bState.other.filter(o=>o.day===dayIndex).reduce((s,o)=>s+(+o.amount||0),0);
+      badge.textContent = bMoney(h+bTransAmt(dayIndex)+others);
+    }
+  }
+}
+
+/* ---------- generelt: hotell / transport ---------- */
+function bApplyGeneralNight(){
+  const N = bNNights(), v = parseFloat(bState.generalNight)||0;
+  bState.nights = {};
+  for(let i=0;i<N;i++) bState.nights[i] = {price:v, pinned:false};
+  bSave();
+}
+function bSpreadHotelKeepPinned(){
+  const N = bNNights(), v = parseFloat(bState.generalNight)||0;
+  const target = v*N;
+  let lockedSum = 0, lockedCount = 0;
+  for(let i=0;i<N;i++){ if(bHotelPinned(i)){ lockedSum += bHotelAmt(i); lockedCount++; } }
+  const remaining = Math.max(0, target-lockedSum);
+  const unlockedCount = N-lockedCount;
+  if(unlockedCount<=0){ bSave(); return; }
+  const base = Math.floor(remaining/unlockedCount);
+  let rest = remaining - base*unlockedCount, done=0;
+  for(let i=0;i<N;i++){
+    if(bHotelPinned(i)) continue;
+    let amt = base + (done<rest?1:0); done++;
+    bState.nights[i] = {price:amt, pinned:false};
+  }
+  bSave();
+}
+function bApplyGeneralTransport(){
+  const D = bNDays(), v = parseFloat(bState.generalTransport)||0;
+  bState.transport = {}; bState.transPinned = {};
+  for(let i=0;i<D;i++) bState.transport[i] = v;
+  bSave();
+}
+function bEditTransport(i, val){ bEditTransportLight(i, val); bRender(); }
+/* Som over, men uten å bygge om hele dag-listen (unngår at feltet mister
+   fokus) – oppdaterer i stedet dagssum-tallet for berørte dager direkte. */
+function bEditTransportLight(i, val){
+  const D = bNDays(), v = Math.max(0, parseFloat(val)||0);
+  const old = bTransAmt(i);
+  bState.transport[i] = v;
+  const touched = [i];
+  if(bState.transAuto){
+    const target = (parseFloat(bState.generalTransport)||0)*D;
+    let diff = v-old;
+    const others = []; for(let k=0;k<D;k++){ if(k!==i && !bState.transPinned[k]) others.push(k); }
+    if(others.length){
+      const per = diff/others.length;
+      for(const k of others){ bState.transport[k] = Math.max(0, Math.round(bTransAmt(k)-per)); touched.push(k); }
+    }
+  }
+  bSaveLocal(); bSaveCloud(); bRecalcTotals();
+  for(const k of touched){
+    const badge = document.querySelector('.bday-card[data-i="'+k+'"] .bday-sum');
+    if(badge){
+      const isLast = k>=bNNights();
+      const h = isLast?0:bHotelAmt(k);
+      const others2 = bState.other.filter(o=>o.day===k).reduce((s,o)=>s+(+o.amount||0),0);
+      badge.textContent = bMoney(h+bTransAmt(k)+others2);
+    }
+    const tInput = document.querySelector('.bday-card[data-i="'+k+'"] [data-transport]');
+    if(tInput && k!==i) tInput.value = bTransAmt(k);
+  }
+}
+
+/* ---------- andre utgifter ---------- */
+function bAddOther(){
+  bState.other.push({id:"o"+(bOtherIdSeq++)+"_"+Date.now().toString(36), name:"", day:null, amount:0, who:{a:true,b:true}});
+  bSave();
+}
+function bRemoveOther(id){
+  bState.other = bState.other.filter(o=>o.id!==id);
+  bSave();
+}
+
+/* ---------- bilde ---------- */
+function bCompressImage(file, cb){
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const maxW = 480;
+      const scale = Math.min(1, maxW/img.width);
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width*scale); c.height = Math.round(img.height*scale);
+      const ctx = c.getContext("2d");
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      cb(c.toDataURL("image/jpeg", 0.72));
+    };
+    img.onerror = ()=> cb(null);
+    img.src = ev.target.result;
+  };
+  reader.onerror = ()=> cb(null);
+  reader.readAsDataURL(file);
+}
+
+/* ---------- rendering ---------- */
+function bBindInputs(){
+  $("bStart").value = bState.startDate;
+  $("bEnd").value = bState.endDate;
+  $("bTravelers").value = bState.travelers;
+  $("bTripBudget").value = bState.tripBudget||"";
+  $("bGenNight").value = bState.generalNight;
+  $("bGenTrans").value = bState.generalTransport;
+  $("bTransAuto").checked = !!bState.transAuto;
+}
+function bMoney(n){ return nb.format(Math.round(n||0))+" kr"; }
+
+function bCardStyle(color){
+  if(!color) return "";
+  return ' style="background:color-mix(in srgb, '+color+' 42%, var(--card));'+
+    'border-color:color-mix(in srgb, '+color+' 65%, var(--line))"';
+}
+function bRenderDays(){
+  const D = bNDays(), N = bNNights();
+  let html = "";
+  for(let i=0;i<D;i++){
+    const iso = bDayISO(i);
+    const isLast = i>=N;
+    const hAmt = isLast ? null : bHotelAmt(i);
+    const tAmt = bTransAmt(i);
+    const others = bState.other.filter(o=>o.day===i);
+    const otherSum = others.reduce((s,o)=>s+(+o.amount||0),0);
+    const daySum = (hAmt||0)+tAmt+otherSum;
+    const noteOpen = bAllDetailsOpen || bDetailsOpen[i];
+    const wH = bState.who[i]||{}, wT = bState.whoT[i]||{};
+    const color = bState.color[i]||"";
+    const img = bState.img[i];
+    html += '<div class="bday-card'+(noteOpen?' noteopen':'')+(color?' tinted':'')+'"'+bCardStyle(color)+' data-i="'+i+'">'+
+      '<div class="bday-head"><span class="bday-date">Dag '+(i+1)+' <span>· '+bFmtDayDate(iso)+'</span></span>'+
+      '<span class="bday-sum">'+bMoney(daySum)+'</span></div>'+
+      '<div class="bday-body">'+
+        '<div class="bday-photo-sq" data-photo>'+
+          (img ? '<img src="'+img+'">' : '<span class="cam">🏨</span>')+
+          '<span class="cam-badge">'+ICO_CAM+'</span>'+
+          (img ? '<button type="button" class="photo-del" data-photo-del aria-label="Fjern bilde">✕</button>' : '')+
+          '<input type="file" accept="image/*" data-photo-file hidden>'+
+        '</div>'+
+        '<div class="bday-fields">'+
+          '<input class="field" placeholder="Sted / hotellnavn" data-place value="'+escapeHtml(bState.place[i]||"")+'">'+
+          (isLast
+            ? '<div class="bday-amtline" style="opacity:.55"><span class="ico">🏨</span><span style="font-size:12px">Avreisedag – ingen hotellnatt</span></div>'
+            : '<div class="bday-amtline"><span class="ico">🏨</span>'+
+              '<input type="number" inputmode="numeric" data-hotel value="'+hAmt+'">'+
+              '<button type="button" class="pin-btn'+(bHotelPinned(i)?' on':'')+'" data-pin aria-label="Lås">📌</button>'+
+              '<button type="button" class="who-mini a'+(wH.a?' on':'')+'" data-whoh="a">A</button>'+
+              '<button type="button" class="who-mini b'+(wH.b?' on':'')+'" data-whoh="b">B</button></div>')+
+          '<div class="bday-amtline"><span class="ico">🚄</span>'+
+            '<input type="number" inputmode="numeric" data-transport value="'+tAmt+'">'+
+            '<button type="button" class="pin-btn'+(bState.transPinned[i]?' on':'')+'" data-transpin aria-label="Lås">📌</button>'+
+            '<button type="button" class="who-mini a'+(wT.a?' on':'')+'" data-whot="a">A</button>'+
+            '<button type="button" class="who-mini b'+(wT.b?' on':'')+'" data-whot="b">B</button></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="bday-linkrow">'+
+        '<input class="field" placeholder="Lenke (Google Maps / nettside)" data-link value="'+escapeHtml(bState.link[i]||"")+'">'+
+        '<button type="button" class="icon-btn" data-open-link aria-label="Åpne lenke">'+ICO_OPEN+'</button>'+
+        '<button type="button" class="icon-btn'+(color?' has-color':'')+'"'+(color?' style="--bcolor:'+color+'"':'')+' data-color-open aria-label="Velg farge">'+ICO_EYEDROP+'</button>'+
+      '</div>'+
+      (others.length ? '<div class="b-hint" style="margin:0 0 9px">+ '+others.length+' andre utgift'+(others.length>1?'er':'')+' denne dagen: '+bMoney(otherSum)+'</div>' : '')+
+      '<button type="button" class="bday-note-toggle" data-more><span class="note-ico">'+ICO_NOTE+'</span> Notat <svg class="chev-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>'+
+      '<div class="bday-note-body">'+
+        '<textarea class="field" placeholder="Notat …" rows="2" data-note style="margin:9px 0 0">'+escapeHtml(bState.note[i]||"")+'</textarea>'+
+      '</div>'+
+    '</div>';
+  }
+  $("bDayList").innerHTML = html;
+}
+
+function bRenderOther(){
+  const D = bNDays();
+  let dayOpts = '<option value="">Ingen dag</option>';
+  for(let i=0;i<D;i++) dayOpts += '<option value="'+i+'">Dag '+(i+1)+' · '+bFmtDayDate(bDayISO(i))+'</option>';
+  if(!bState.other.length){
+    $("bOtherList").innerHTML = '<div class="empty" style="padding:14px 4px">Ingen andre utgifter lagt inn ennå.</div>';
+    return;
+  }
+  $("bOtherList").innerHTML = bState.other.map(o=>{
+    const w = o.who||{};
+    return '<div class="other-item" data-oid="'+o.id+'">'+
+      '<div class="oi-mid">'+
+        '<input class="field" style="margin-bottom:6px" placeholder="Hva er det?" data-oname value="'+escapeHtml(o.name||"")+'">'+
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+
+          '<select class="field" style="margin-bottom:0;width:auto;flex:1;min-width:120px" data-oday>'+
+            dayOpts.replace('value="'+o.day+'"','value="'+o.day+'" selected')+
+          '</select>'+
+          '<button type="button" class="who-pill a'+(w.a?' on':'')+'" data-owho="a">A</button>'+
+          '<button type="button" class="who-pill b'+(w.b?' on':'')+'" data-owho="b">B</button>'+
+        '</div>'+
+      '</div>'+
+      '<input type="number" inputmode="numeric" class="oi-amt" style="width:80px;border:1.5px solid var(--line);border-radius:9px;padding:8px;background:var(--card);text-align:right" data-oamt value="'+(o.amount||0)+'">'+
+      '<button type="button" class="del" data-odel aria-label="Slett">✕</button>'+
+    '</div>';
+  }).join("");
+}
+
+function bRenderSettle(){
+  let pa=0, pb=0;
+  for(let i=0;i<bNNights();i++){ const s=bSplitWho(bHotelAmt(i), bState.who[i]); pa+=s.a; pb+=s.b; }
+  for(let i=0;i<bNDays();i++){ const s=bSplitWho(bTransAmt(i), bState.whoT[i]); pa+=s.a; pb+=s.b; }
+  for(const o of bState.other){ const s=bSplitWho(+o.amount||0, o.who); pa+=s.a; pb+=s.b; }
+  $("bPaidA").textContent = bMoney(pa);
+  $("bPaidB").textContent = bMoney(pb);
+  const diff = pa-pb, v = $("bVerdict");
+  if(Math.abs(diff)<1){ v.className="settle-verdict even"; v.innerHTML="Dere er skuls 🎌"; }
+  else{
+    const who = diff>0 ? "Bibbi skylder Anette" : "Anette skylder Bibbi";
+    v.className="settle-verdict";
+    v.innerHTML = who+" <b>"+bMoney(Math.abs(diff))+"</b>";
+  }
+}
+
+function bRecalcTotals(){
+  const a = bParseD(bState.startDate), b = bParseD(bState.endDate);
+  $("bTripSub").textContent = a.getDate()+". "+FULL_MONTH[a.getMonth()]+" – "+b.getDate()+". "+FULL_MONTH[b.getMonth()]+" "+b.getFullYear()+" · "+bNNights()+" netter · "+bNDays()+" dager";
+  $("bHotelTotal").textContent = bMoney(bHotelTotal());
+  $("bTransTotal").textContent = bMoney(bTransTotal());
+  $("bSumHotel").textContent = bMoney(bHotelTotal());
+  $("bSumTransport").textContent = bMoney(bTransTotal());
+  $("bSumOther").textContent = bMoney(bOtherTotal());
+  $("bSumTotal").textContent = bMoney(bGrandTotal());
+  $("bSumPerson").textContent = bMoney(bGrandTotal()/(parseFloat(bState.travelers)||1));
+  $("bSumPerDay").textContent = bMoney(bGrandTotal()/bNDays());
+  bRenderSettle();
+}
+function bRender(){
+  bRecalcTotals();
+  bRenderDays();
+  bRenderOther();
+}
+
+/* ---------- events ---------- */
+["bStart","bEnd"].forEach(id=> $(id).addEventListener("change", ()=>{
+  bState.startDate = $("bStart").value || bState.startDate;
+  bState.endDate = $("bEnd").value || bState.endDate;
+  bSave();
+}));
+$("bTravelers").addEventListener("input", ()=>{ bState.travelers = $("bTravelers").value; bSave(); });
+$("bTripBudget").addEventListener("input", ()=>{ bState.tripBudget = $("bTripBudget").value; bSave(); });
+$("bGenNight").addEventListener("input", ()=>{ bState.generalNight = $("bGenNight").value; bSave(); });
+$("bGenTrans").addEventListener("input", ()=>{ bState.generalTransport = $("bGenTrans").value; bSave(); });
+$("bTransAuto").addEventListener("change", ()=>{ bState.transAuto = $("bTransAuto").checked; bSave(); });
+$("bHotelApply").addEventListener("click", bApplyGeneralNight);
+$("bHotelSpread").addEventListener("click", bSpreadHotelKeepPinned);
+$("bTransApply").addEventListener("click", bApplyGeneralTransport);
+$("bToggleAllDetails").addEventListener("click", ()=>{
+  bAllDetailsOpen = !bAllDetailsOpen; bDetailsOpen = {};
+  $("bToggleAllDetails").textContent = bAllDetailsOpen ? "Skjul notater" : "Vis notater";
+  bRenderDays();
+});
+$("bAddOther").addEventListener("click", bAddOther);
+
+$("bDayList").addEventListener("click", e=>{
+  const card = e.target.closest(".bday-card"); if(!card) return;
+  const i = +card.dataset.i;
+  if(e.target.closest("[data-pin]")){ bState.nights[i]=bState.nights[i]||{price:0,pinned:false}; bState.nights[i].pinned=!bState.nights[i].pinned; bSave(); return; }
+  if(e.target.closest("[data-transpin]")){ bState.transPinned[i]=!bState.transPinned[i]; bSave(); return; }
+  if(e.target.closest("[data-whoh]")){ const k=e.target.closest("[data-whoh]").dataset.whoh; bState.who[i]=bState.who[i]||{}; bState.who[i][k]=!bState.who[i][k]; if(k==="b"&&bState.who[i][k]) showPeachFloat(); bSave(); return; }
+  if(e.target.closest("[data-whot]")){ const k=e.target.closest("[data-whot]").dataset.whot; bState.whoT[i]=bState.whoT[i]||{}; bState.whoT[i][k]=!bState.whoT[i][k]; if(k==="b"&&bState.whoT[i][k]) showPeachFloat(); bSave(); return; }
+  if(e.target.closest("[data-more]")){ bDetailsOpen[i]=!bDetailsOpen[i]; bAllDetailsOpen=false; bRenderDays(); return; }
+  if(e.target.closest("[data-photo-del]")){ delete bState.img[i]; bSave(); return; }
+  if(e.target.closest("[data-photo]")){ card.querySelector("[data-photo-file]").click(); return; }
+  if(e.target.closest("[data-open-link]")){ bOpenLink(bState.link[i]); return; }
+  if(e.target.closest("[data-color-open]")){ openColorSheet(i); return; }
+});
+$("bDayList").addEventListener("change", e=>{
+  if(e.target.matches("[data-photo-file]")){
+    const card = e.target.closest(".bday-card"); const i = +card.dataset.i;
+    const f = e.target.files[0]; if(!f) return;
+    bCompressImage(f, dataUrl=>{ if(dataUrl){ bState.img[i]=dataUrl; bSave(); } });
+  }
+});
+
+/* ---------- farge-popup ---------- */
+function bOpenLink(url){
+  url = (url||"").trim(); if(!url) return;
+  if(!/^https?:\/\//i.test(url)) url = "https://"+url;
+  window.open(url, "_blank", "noopener");
+}
+function buildColorGrid(){
+  $("colorGrid").innerHTML = SWATCHES.map(c=>
+    '<button type="button" class="swatch" data-cswatch="'+c+'" style="background:'+
+    (c||'repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 0/12px 12px')+'" aria-label="Farge"></button>'
+  ).join("") + '<label class="swatch-custom"><input type="color" id="colorCustomInput" value="#ee6da4"></label>';
+}
+function syncColorGrid(){
+  const color = colorEditIndex!=null ? (bState.color[colorEditIndex]||"") : "";
+  $("colorGrid").querySelectorAll("[data-cswatch]").forEach(b=> b.classList.toggle("on", b.dataset.cswatch===color));
+  $("colorGrid").querySelector(".swatch-custom").classList.toggle("on", !!color && SWATCHES.indexOf(color)===-1);
+  $("colorPrevBtn").style.display = colorEditIndex>0 ? "" : "none";
+}
+function openColorSheet(i){
+  colorEditIndex = i;
+  $("colorSheetTitle").textContent = "🎨 Farge for dag "+(i+1);
+  syncColorGrid();
+  $("colorOverlay").classList.add("show");
+}
+function closeColorSheet(){ $("colorOverlay").classList.remove("show"); colorEditIndex = null; }
+function bSetDayColor(i, color){ bState.color[i] = color; bSave(); }
+buildColorGrid();
+$("colorGrid").addEventListener("click", e=>{
+  const sw = e.target.closest("[data-cswatch]");
+  if(sw && colorEditIndex!=null){ bSetDayColor(colorEditIndex, sw.dataset.cswatch); closeColorSheet(); }
+});
+$("colorCustomInput").addEventListener("change", e=>{
+  if(colorEditIndex!=null){ bSetDayColor(colorEditIndex, e.target.value); closeColorSheet(); }
+});
+$("colorPrevBtn").addEventListener("click", ()=>{
+  if(colorEditIndex==null || colorEditIndex<=0) return;
+  bSetDayColor(colorEditIndex, bState.color[colorEditIndex-1]||"");
+  closeColorSheet();
+});
+$("colorCloseBtn").addEventListener("click", closeColorSheet);
+$("colorOverlay").addEventListener("click", e=>{ if(e.target===$("colorOverlay")) closeColorSheet(); });
+$("bDayList").addEventListener("input", e=>{
+  const card = e.target.closest(".bday-card"); if(!card) return;
+  const i = +card.dataset.i;
+  if(e.target.matches("[data-place]")){ bState.place[i]=e.target.value; bLightSave(); }
+  else if(e.target.matches("[data-link]")){ bState.link[i]=e.target.value; bLightSave(); }
+  else if(e.target.matches("[data-note]")){ bState.note[i]=e.target.value; bLightSave(); }
+  else if(e.target.matches("[data-hotel]")){
+    bState.nights[i]=bState.nights[i]||{price:0,pinned:false};
+    bState.nights[i].price=Math.max(0,parseFloat(e.target.value)||0);
+    bNumericSave(i);
+  }
+  else if(e.target.matches("[data-transport]")){
+    bEditTransportLight(i, e.target.value);
+  }
+});
+
+$("bOtherList").addEventListener("click", e=>{
+  const row = e.target.closest(".other-item"); if(!row) return;
+  const id = row.dataset.oid;
+  const o = bState.other.find(x=>x.id===id); if(!o) return;
+  if(e.target.closest("[data-odel]")){ bRemoveOther(id); return; }
+  const wb = e.target.closest("[data-owho]");
+  if(wb){ o.who = o.who||{}; const k = wb.dataset.owho; o.who[k] = !o.who[k]; if(k==="b"&&o.who[k]) showPeachFloat(); bSave(); }
+});
+$("bOtherList").addEventListener("input", e=>{
+  const row = e.target.closest(".other-item"); if(!row) return;
+  const o = bState.other.find(x=>x.id===row.dataset.oid); if(!o) return;
+  if(e.target.matches("[data-oname]")){ o.name = e.target.value; bLightSave(); }
+  else if(e.target.matches("[data-oamt]")){ o.amount = Math.max(0, parseFloat(e.target.value)||0); bNumericSave(o.day); }
+});
+$("bOtherList").addEventListener("change", e=>{
+  if(e.target.matches("[data-oday]")){
+    const row = e.target.closest(".other-item");
+    const o = bState.other.find(x=>x.id===row.dataset.oid); if(!o) return;
+    o.day = e.target.value===""? null : +e.target.value;
+    bSave();
+  }
+});
+
+$("bExportBtn").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(bState,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "japan-budsjett-"+todayStr()+".json";
+  a.click();
+});
+$("bImportBtn").addEventListener("click", ()=> $("bImportFile").click());
+$("bImportFile").addEventListener("change", async e=>{
+  const f = e.target.files[0]; if(!f) return;
+  try{
+    const d = JSON.parse(await f.text());
+    bState = Object.assign(bState, d);
+    bBindInputs(); bSave();
+    alert("Importert!");
+  }catch(err){ alert("Kunne ikke lese filen."); }
+  e.target.value = "";
+});
+$("bPrintBtn").addEventListener("click", ()=> window.print());
+$("bResetBtn").addEventListener("click", ()=>{
+  if(!confirm("Nullstille budsjettet? Dette sletter alle innlagte verdier i budsjett-fanen.")) return;
+  bState = {startDate:"2026-10-19", endDate:"2026-11-19", travelers:2, tripBudget:"",
+    generalNight:1200, generalTransport:200, transAuto:false,
+    nights:{}, transport:{}, transPinned:{}, other:[], note:{}, place:{}, img:{}, link:{}, color:{},
+    who:{}, whoT:{}, expanded:false};
+  bBindInputs(); bSave();
+});
+
+/* ---------- oppstart for budsjett ---------- */
+try{
+  const saved = JSON.parse(localStorage.getItem(B_KEY));
+  if(saved) bState = Object.assign(bState, saved);
+}catch(e){}
+bBindInputs();
+bRender();
+
 /* ====== oppstart – appen virker uansett, Firebase kobles til i bakgrunnen ====== */
 try{
   const saved = JSON.parse(localStorage.getItem(LS_KEY));
@@ -1196,6 +1925,32 @@ fetchRate(false);
       saveLS(); render(); renderConv();
       setSync(snap.metadata.fromCache && !navigator.onLine ? "off" : "live");
     }, err=>{ setSync("off"); });
+
+    /* Budsjett-dokumentet – samme dokument (trips/SHARE_CODE) som den
+       opprinnelige budsjettsiden brukte, slik at alt dere har lagt inn
+       der blir med videre. */
+    window.fbSetDoc = fs.setDoc;
+    const bDref = fs.doc(db, "trips", SHARE_CODE);
+    let bConnected = false;
+    fs.onSnapshot(bDref, {includeMetadataChanges:true}, snap=>{
+      bRef = bDref;
+      if(!snap.exists()){
+        fs.setDoc(bDref, {state: JSON.stringify(bState), updated: Date.now()}).catch(()=>{});
+        return;
+      }
+      const d = snap.data();
+      const firstConnect = !bConnected; bConnected = true;
+      if(d && d.state){
+        try{
+          bApplyingRemote = true;
+          const remote = JSON.parse(d.state);
+          bState = Object.assign(bState, remote);
+        }catch(e){}
+        finally{ bApplyingRemote = false; }
+      }
+      bBindInputs(); bRender();
+      if(firstConnect) bSaveLocal();
+    }, err=>{});
   }catch(e){ setSync("local"); }
 })();
 
