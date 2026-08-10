@@ -414,6 +414,17 @@
   .other-item .oi-amt{font-size:13.5px;font-weight:750;font-variant-numeric:tabular-nums;flex:0 0 auto}
   .other-item .del{flex:0 0 auto;width:26px;height:26px;border:0;border-radius:99px;background:var(--card);
     color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  /* A/B-knappene under «Andre utgifter» */
+  .who-pill{flex:0 0 auto;min-width:34px;height:32px;padding:0 11px;border-radius:99px;
+    border:1.5px solid var(--line);background:var(--card);color:var(--muted);
+    font-size:13px;font-weight:750;font-family:inherit;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color:transparent;transition:background .12s,color .12s,border-color .12s}
+  .who-pill:active{transform:scale(.94)}
+  .who-pill.a.on{background:var(--pa);border-color:var(--pa);color:#fff}
+  .who-pill.b.on{background:var(--pb);border-color:var(--pb);color:#fff}
+  @keyframes justAdded{0%{background:var(--accent-soft);border-color:var(--accent)}100%{}}
+  .other-item.just-added{animation:justAdded 1.4s ease-out}
 </style>
 </head>
 <body>
@@ -1637,8 +1648,18 @@ function bEditFoodLight(i, val){
 
 /* ---------- andre utgifter ---------- */
 function bAddOther(){
-  bState.other.push({id:"o"+(bOtherIdSeq++)+"_"+Date.now().toString(36), name:"", day:null, amount:0, who:{a:false,b:false}});
-  bSave();
+  const id = "o"+(bOtherIdSeq++)+"_"+Date.now().toString(36);
+  bState.other.push({id, name:"", day:null, amount:0, who:{a:false,b:false}});
+  /* Bygg bare om utgiftslisten – ikke hele dag-for-dag-listen (32 kort med
+     bilder). Det gjorde at siden hoppet og hang litt på mobil. */
+  bSaveLocal(); bSaveCloud(); bRecalcTotals(); bRenderOther();
+  const row = document.querySelector('.other-item[data-oid="'+id+'"]');
+  if(row){
+    row.classList.add("just-added");
+    if(row.scrollIntoView) row.scrollIntoView({block:"center", behavior:"smooth"});
+    const nameInput = row.querySelector("[data-oname]");
+    if(nameInput) nameInput.focus();
+  }
 }
 function bRemoveOther(id){
   bState.other = bState.other.filter(o=>o.id!==id);
@@ -1935,7 +1956,14 @@ $("bOtherList").addEventListener("click", e=>{
   const o = bState.other.find(x=>x.id===id); if(!o) return;
   if(e.target.closest("[data-odel]")){ bRemoveOther(id); return; }
   const wb = e.target.closest("[data-owho]");
-  if(wb){ o.who = o.who||{}; const k = wb.dataset.owho; o.who[k] = !o.who[k]; if(k==="b"&&o.who[k]) showPeachFloat(); bSave(); }
+  if(wb){
+    o.who = o.who||{}; const k = wb.dataset.owho; o.who[k] = !o.who[k];
+    if(k==="b"&&o.who[k]) showPeachFloat();
+    /* Oppdater knappen direkte i stedet for å bygge om hele siden – da
+       ser man umiddelbart at markeringen slo inn. */
+    wb.classList.toggle("on", !!o.who[k]);
+    bSaveLocal(); bSaveCloud(); bRecalcTotals();
+  }
 });
 $("bOtherList").addEventListener("input", e=>{
   const row = e.target.closest(".other-item"); if(!row) return;
