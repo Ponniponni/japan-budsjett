@@ -547,9 +547,23 @@
         <div><div class="lbl">Total transportbudsjett</div><div class="field" id="bTransTotal" style="background:var(--card2);color:var(--muted)">–</div></div>
       </div>
       <div class="b-toolbar">
-        <button type="button" class="b-btn" id="bTransApply">Bruk på alle dager</button>
+        <button type="button" class="b-btn" id="bTransSpread">Behold låste 📌, fordel resten</button>
       </div>
+      <p class="b-hint">«Behold låste, fordel resten» bruker generell transport × antall dager som total, beholder de låste dagene uendret, og fordeler resten på de ulåste dagene.</p>
       <label class="b-check"><input type="checkbox" id="bTransAuto"> Automatisk fordeling – hold totalbudsjettet fast (lås dager med 📌)</label>
+    </section>
+
+    <section class="card">
+      <h2>🍜 Mat</h2>
+      <div class="b-2col">
+        <div><div class="lbl">Ca. mat/dag (kr)</div><input class="field" type="number" id="bGenFood"></div>
+        <div><div class="lbl">Totalt matbudsjett</div><div class="field" id="bFoodTotal" style="background:var(--card2);color:var(--muted)">–</div></div>
+      </div>
+      <div class="b-toolbar">
+        <button type="button" class="b-btn" id="bFoodSpread">Behold låste 📌, fordel resten</button>
+      </div>
+      <p class="b-hint">«Behold låste, fordel resten» bruker ca. mat/dag × antall dager som total, beholder de låste dagene uendret, og fordeler resten på de ulåste dagene.</p>
+      <label class="b-check"><input type="checkbox" id="bFoodAuto"> Automatisk fordeling – hold totalbudsjettet fast (lås dager med 📌)</label>
     </section>
 
     <div style="display:flex;align-items:center;justify-content:space-between;margin:20px 4px 2px">
@@ -566,9 +580,10 @@
 
     <section class="card" style="margin-top:18px">
       <h2>💴 Oppsummering</h2>
-      <div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:14px">
+      <div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
         <div class="stat"><div class="label">Hotell</div><div class="val" id="bSumHotel" style="font-size:15px">–</div></div>
         <div class="stat"><div class="label">Transport</div><div class="val" id="bSumTransport" style="font-size:15px">–</div></div>
+        <div class="stat"><div class="label">Mat</div><div class="val" id="bSumFood" style="font-size:15px">–</div></div>
         <div class="stat"><div class="label">Andre</div><div class="val" id="bSumOther" style="font-size:15px">–</div></div>
       </div>
       <div class="stats-grid" style="grid-template-columns:1.4fr 1fr 1fr">
@@ -580,9 +595,11 @@
 
     <section class="card" id="bSettleCard">
       <h2>Hvem har betalt hva</h2>
-      <p class="b-hint" style="margin:0 0 10px">Basert på Anette/Bibbi-markeringene på hotell, transport og andre utgifter. Marker begge for å dele likt.</p>
+      <p class="b-hint" style="margin:0 0 10px">Teller bare med poster som er markert med A, B eller begge – på hotell, transport, mat og andre utgifter. Umarkerte poster er bare estimat og holdes utenfor. Marker begge for å dele likt.</p>
       <div class="settle-row"><span class="who"><span class="dot a"></span>Anette har lagt ut</span><span class="amt" id="bPaidA">0 kr</span></div>
       <div class="settle-row"><span class="who"><span class="dot b"></span>Bibbi har lagt ut</span><span class="amt" id="bPaidB">0 kr</span></div>
+      <div class="settle-row" style="border-top:1.5px solid var(--line);margin-top:4px;padding-top:9px"><span class="who"><b>Betalt så langt</b></span><span class="amt" id="bPaidTot">0 kr</span></div>
+      <p class="b-hint" id="bUnpaidHint" style="margin:8px 0 0"></p>
       <div class="settle-verdict even" id="bVerdict">Dere er skuls 🎌</div>
     </section>
 
@@ -1418,9 +1435,10 @@ const FULL_MONTH = ["januar","februar","mars","april","mai","juni","juli","augus
 let bState = {
   startDate:"2026-10-19", endDate:"2026-11-19", travelers:2, tripBudget:"",
   generalNight:1200, generalTransport:200, transAuto:false,
-  nights:{}, transport:{}, transPinned:{},
+  generalFood:500, foodAuto:false,
+  nights:{}, transport:{}, transPinned:{}, food:{}, foodPinned:{},
   other:[], note:{}, place:{}, img:{}, link:{}, color:{},
-  who:{}, whoT:{}, expanded:false
+  who:{}, whoT:{}, whoF:{}, expanded:false
 };
 let bOtherIdSeq = 1;
 let bDetailsOpen = {}, bAllDetailsOpen = false;
@@ -1447,15 +1465,18 @@ function bFmtDayDate(iso){
 function bHotelAmt(i){ return (bState.nights[i] && bState.nights[i].price) || 0; }
 function bHotelPinned(i){ return !!(bState.nights[i] && bState.nights[i].pinned); }
 function bTransAmt(i){ return bState.transport[i] || 0; }
+function bFoodAmt(i){ return bState.food[i] || 0; }
 function bHotelTotal(){ let s=0; for(let i=0;i<bNNights();i++) s+=bHotelAmt(i); return s; }
 function bTransTotal(){ let s=0; for(let i=0;i<bNDays();i++) s+=bTransAmt(i); return s; }
+function bFoodTotal(){ let s=0; for(let i=0;i<bNDays();i++) s+=bFoodAmt(i); return s; }
 function bOtherTotal(){ return bState.other.reduce((s,o)=>s+(+o.amount||0),0); }
-function bGrandTotal(){ return bHotelTotal()+bTransTotal()+bOtherTotal(); }
+function bGrandTotal(){ return bHotelTotal()+bTransTotal()+bFoodTotal()+bOtherTotal(); }
 function bSplitWho(amt, w){
   w = w || {};
   if(w.a && !w.b) return {a:amt, b:0};
   if(w.b && !w.a) return {a:0, b:amt};
-  return {a:amt/2, b:amt/2}; /* begge markert, eller ingen -> deles likt */
+  if(w.a && w.b) return {a:amt/2, b:amt/2}; /* begge markert -> deles likt */
+  return {a:0, b:0}; /* ingen markert -> ikke betalt ennå, holdes utenfor oppgjøret */
 }
 
 /* ---------- skriving ---------- */
@@ -1480,7 +1501,7 @@ function bNumericSave(dayIndex){
       const isLast = dayIndex>=bNNights();
       const h = isLast?0:bHotelAmt(dayIndex);
       const others = bState.other.filter(o=>o.day===dayIndex).reduce((s,o)=>s+(+o.amount||0),0);
-      badge.textContent = bMoney(h+bTransAmt(dayIndex)+others);
+      badge.textContent = bMoney(h+bTransAmt(dayIndex)+bFoodAmt(dayIndex)+others);
     }
   }
 }
@@ -1515,6 +1536,46 @@ function bApplyGeneralTransport(){
   for(let i=0;i<D;i++) bState.transport[i] = v;
   bSave();
 }
+function bApplyGeneralFood(){
+  const D = bNDays(), v = parseFloat(bState.generalFood)||0;
+  bState.food = {}; bState.foodPinned = {};
+  for(let i=0;i<D;i++) bState.food[i] = v;
+  bSave();
+}
+/* Samme prinsipp som for hotell: generell sats × antall dager blir totalen,
+   låste dager (📌) beholdes uendret, og resten fordeles likt på de ulåste. */
+function bSpreadTransKeepPinned(){
+  const D = bNDays(), v = parseFloat(bState.generalTransport)||0;
+  const target = v*D;
+  let lockedSum = 0, lockedCount = 0;
+  for(let i=0;i<D;i++){ if(bState.transPinned[i]){ lockedSum += bTransAmt(i); lockedCount++; } }
+  const remaining = Math.max(0, target-lockedSum);
+  const unlockedCount = D-lockedCount;
+  if(unlockedCount<=0){ bSave(); return; }
+  const base = Math.floor(remaining/unlockedCount);
+  let rest = remaining - base*unlockedCount, done=0;
+  for(let i=0;i<D;i++){
+    if(bState.transPinned[i]) continue;
+    bState.transport[i] = base + (done<rest?1:0); done++;
+  }
+  bSave();
+}
+function bSpreadFoodKeepPinned(){
+  const D = bNDays(), v = parseFloat(bState.generalFood)||0;
+  const target = v*D;
+  let lockedSum = 0, lockedCount = 0;
+  for(let i=0;i<D;i++){ if(bState.foodPinned[i]){ lockedSum += bFoodAmt(i); lockedCount++; } }
+  const remaining = Math.max(0, target-lockedSum);
+  const unlockedCount = D-lockedCount;
+  if(unlockedCount<=0){ bSave(); return; }
+  const base = Math.floor(remaining/unlockedCount);
+  let rest = remaining - base*unlockedCount, done=0;
+  for(let i=0;i<D;i++){
+    if(bState.foodPinned[i]) continue;
+    bState.food[i] = base + (done<rest?1:0); done++;
+  }
+  bSave();
+}
 function bEditTransport(i, val){ bEditTransportLight(i, val); bRender(); }
 /* Som over, men uten å bygge om hele dag-listen (unngår at feltet mister
    fokus) – oppdaterer i stedet dagssum-tallet for berørte dager direkte. */
@@ -1539,16 +1600,44 @@ function bEditTransportLight(i, val){
       const isLast = k>=bNNights();
       const h = isLast?0:bHotelAmt(k);
       const others2 = bState.other.filter(o=>o.day===k).reduce((s,o)=>s+(+o.amount||0),0);
-      badge.textContent = bMoney(h+bTransAmt(k)+others2);
+      badge.textContent = bMoney(h+bTransAmt(k)+bFoodAmt(k)+others2);
     }
     const tInput = document.querySelector('.bday-card[data-i="'+k+'"] [data-transport]');
     if(tInput && k!==i) tInput.value = bTransAmt(k);
   }
 }
+function bEditFood(i, val){ bEditFoodLight(i, val); bRender(); }
+/* Lett versjon for matbeløp – samme mønster som bEditTransportLight. */
+function bEditFoodLight(i, val){
+  const D = bNDays(), v = Math.max(0, parseFloat(val)||0);
+  const old = bFoodAmt(i);
+  bState.food[i] = v;
+  const touched = [i];
+  if(bState.foodAuto){
+    let diff = v-old;
+    const others = []; for(let k=0;k<D;k++){ if(k!==i && !bState.foodPinned[k]) others.push(k); }
+    if(others.length){
+      const per = diff/others.length;
+      for(const k of others){ bState.food[k] = Math.max(0, Math.round(bFoodAmt(k)-per)); touched.push(k); }
+    }
+  }
+  bSaveLocal(); bSaveCloud(); bRecalcTotals();
+  for(const k of touched){
+    const badge = document.querySelector('.bday-card[data-i="'+k+'"] .bday-sum');
+    if(badge){
+      const isLast = k>=bNNights();
+      const h = isLast?0:bHotelAmt(k);
+      const others2 = bState.other.filter(o=>o.day===k).reduce((s,o)=>s+(+o.amount||0),0);
+      badge.textContent = bMoney(h+bTransAmt(k)+bFoodAmt(k)+others2);
+    }
+    const fInput = document.querySelector('.bday-card[data-i="'+k+'"] [data-food]');
+    if(fInput && k!==i) fInput.value = bFoodAmt(k);
+  }
+}
 
 /* ---------- andre utgifter ---------- */
 function bAddOther(){
-  bState.other.push({id:"o"+(bOtherIdSeq++)+"_"+Date.now().toString(36), name:"", day:null, amount:0, who:{a:true,b:true}});
+  bState.other.push({id:"o"+(bOtherIdSeq++)+"_"+Date.now().toString(36), name:"", day:null, amount:0, who:{a:false,b:false}});
   bSave();
 }
 function bRemoveOther(id){
@@ -1586,6 +1675,8 @@ function bBindInputs(){
   $("bGenNight").value = bState.generalNight;
   $("bGenTrans").value = bState.generalTransport;
   $("bTransAuto").checked = !!bState.transAuto;
+  $("bGenFood").value = bState.generalFood;
+  $("bFoodAuto").checked = !!bState.foodAuto;
 }
 function bMoney(n){ return nb.format(Math.round(n||0))+" kr"; }
 
@@ -1602,11 +1693,12 @@ function bRenderDays(){
     const isLast = i>=N;
     const hAmt = isLast ? null : bHotelAmt(i);
     const tAmt = bTransAmt(i);
+    const fAmt = bFoodAmt(i);
     const others = bState.other.filter(o=>o.day===i);
     const otherSum = others.reduce((s,o)=>s+(+o.amount||0),0);
-    const daySum = (hAmt||0)+tAmt+otherSum;
+    const daySum = (hAmt||0)+tAmt+fAmt+otherSum;
     const noteOpen = bAllDetailsOpen || bDetailsOpen[i];
-    const wH = bState.who[i]||{}, wT = bState.whoT[i]||{};
+    const wH = bState.who[i]||{}, wT = bState.whoT[i]||{}, wF = bState.whoF[i]||{};
     const color = bState.color[i]||"";
     const img = bState.img[i];
     html += '<div class="bday-card'+(noteOpen?' noteopen':'')+(color?' tinted':'')+'"'+bCardStyle(color)+' data-i="'+i+'">'+
@@ -1633,6 +1725,11 @@ function bRenderDays(){
             '<button type="button" class="pin-btn'+(bState.transPinned[i]?' on':'')+'" data-transpin aria-label="Lås">📌</button>'+
             '<button type="button" class="who-mini a'+(wT.a?' on':'')+'" data-whot="a">A</button>'+
             '<button type="button" class="who-mini b'+(wT.b?' on':'')+'" data-whot="b">B</button></div>'+
+          '<div class="bday-amtline"><span class="ico">🍜</span>'+
+            '<input type="number" inputmode="numeric" data-food value="'+fAmt+'">'+
+            '<button type="button" class="pin-btn'+(bState.foodPinned[i]?' on':'')+'" data-foodpin aria-label="Lås">📌</button>'+
+            '<button type="button" class="who-mini a'+(wF.a?' on':'')+'" data-whof="a">A</button>'+
+            '<button type="button" class="who-mini b'+(wF.b?' on':'')+'" data-whof="b">B</button></div>'+
         '</div>'+
       '</div>'+
       '<div class="bday-linkrow">'+
@@ -1681,10 +1778,22 @@ function bRenderSettle(){
   let pa=0, pb=0;
   for(let i=0;i<bNNights();i++){ const s=bSplitWho(bHotelAmt(i), bState.who[i]); pa+=s.a; pb+=s.b; }
   for(let i=0;i<bNDays();i++){ const s=bSplitWho(bTransAmt(i), bState.whoT[i]); pa+=s.a; pb+=s.b; }
+  for(let i=0;i<bNDays();i++){ const s=bSplitWho(bFoodAmt(i), bState.whoF[i]); pa+=s.a; pb+=s.b; }
   for(const o of bState.other){ const s=bSplitWho(+o.amount||0, o.who); pa+=s.a; pb+=s.b; }
   $("bPaidA").textContent = bMoney(pa);
   $("bPaidB").textContent = bMoney(pb);
-  const diff = pa-pb, v = $("bVerdict");
+  const paidTot = pa+pb;
+  $("bPaidTot").textContent = bMoney(paidTot);
+
+  /* Hvor mye av budsjettet er ikke fordelt på noen ennå */
+  const rest = Math.max(0, bGrandTotal()-paidTot);
+  $("bUnpaidHint").textContent = rest>0
+    ? "Ikke fordelt ennå: "+bMoney(rest)+" av totalt "+bMoney(bGrandTotal())+" (kun estimat – marker A/B når det er betalt)."
+    : "Alt i budsjettet er fordelt på hvem som har betalt. 🎌";
+
+  /* Hver skal bære halvparten av det som faktisk er lagt ut. Den som har lagt ut
+     mest, har krav på halvparten av differansen – ikke hele. */
+  const diff = (pa-pb)/2, v = $("bVerdict");
   if(Math.abs(diff)<1){ v.className="settle-verdict even"; v.innerHTML="Dere er skuls 🎌"; }
   else{
     const who = diff>0 ? "Bibbi skylder Anette" : "Anette skylder Bibbi";
@@ -1698,8 +1807,10 @@ function bRecalcTotals(){
   $("bTripSub").textContent = a.getDate()+". "+FULL_MONTH[a.getMonth()]+" – "+b.getDate()+". "+FULL_MONTH[b.getMonth()]+" "+b.getFullYear()+" · "+bNNights()+" netter · "+bNDays()+" dager";
   $("bHotelTotal").textContent = bMoney(bHotelTotal());
   $("bTransTotal").textContent = bMoney(bTransTotal());
+  $("bFoodTotal").textContent = bMoney(bFoodTotal());
   $("bSumHotel").textContent = bMoney(bHotelTotal());
   $("bSumTransport").textContent = bMoney(bTransTotal());
+  $("bSumFood").textContent = bMoney(bFoodTotal());
   $("bSumOther").textContent = bMoney(bOtherTotal());
   $("bSumTotal").textContent = bMoney(bGrandTotal());
   $("bSumPerson").textContent = bMoney(bGrandTotal()/(parseFloat(bState.travelers)||1));
@@ -1723,8 +1834,11 @@ $("bTripBudget").addEventListener("input", ()=>{ bState.tripBudget = $("bTripBud
 $("bGenNight").addEventListener("input", ()=>{ bState.generalNight = $("bGenNight").value; bSave(); });
 $("bGenTrans").addEventListener("input", ()=>{ bState.generalTransport = $("bGenTrans").value; bSave(); });
 $("bTransAuto").addEventListener("change", ()=>{ bState.transAuto = $("bTransAuto").checked; bSave(); });
+$("bGenFood").addEventListener("input", ()=>{ bState.generalFood = $("bGenFood").value; bSave(); });
+$("bFoodAuto").addEventListener("change", ()=>{ bState.foodAuto = $("bFoodAuto").checked; bSave(); });
 $("bHotelSpread").addEventListener("click", bSpreadHotelKeepPinned);
-$("bTransApply").addEventListener("click", bApplyGeneralTransport);
+$("bTransSpread").addEventListener("click", bSpreadTransKeepPinned);
+$("bFoodSpread").addEventListener("click", bSpreadFoodKeepPinned);
 $("bToggleAllDetails").addEventListener("click", ()=>{
   bAllDetailsOpen = !bAllDetailsOpen; bDetailsOpen = {};
   $("bToggleAllDetails").textContent = bAllDetailsOpen ? "Skjul notater" : "Vis notater";
@@ -1737,8 +1851,10 @@ $("bDayList").addEventListener("click", e=>{
   const i = +card.dataset.i;
   if(e.target.closest("[data-pin]")){ bState.nights[i]=bState.nights[i]||{price:0,pinned:false}; bState.nights[i].pinned=!bState.nights[i].pinned; bSave(); return; }
   if(e.target.closest("[data-transpin]")){ bState.transPinned[i]=!bState.transPinned[i]; bSave(); return; }
+  if(e.target.closest("[data-foodpin]")){ bState.foodPinned[i]=!bState.foodPinned[i]; bSave(); return; }
   if(e.target.closest("[data-whoh]")){ const k=e.target.closest("[data-whoh]").dataset.whoh; bState.who[i]=bState.who[i]||{}; bState.who[i][k]=!bState.who[i][k]; if(k==="b"&&bState.who[i][k]) showPeachFloat(); bSave(); return; }
   if(e.target.closest("[data-whot]")){ const k=e.target.closest("[data-whot]").dataset.whot; bState.whoT[i]=bState.whoT[i]||{}; bState.whoT[i][k]=!bState.whoT[i][k]; if(k==="b"&&bState.whoT[i][k]) showPeachFloat(); bSave(); return; }
+  if(e.target.closest("[data-whof]")){ const k=e.target.closest("[data-whof]").dataset.whof; bState.whoF[i]=bState.whoF[i]||{}; bState.whoF[i][k]=!bState.whoF[i][k]; if(k==="b"&&bState.whoF[i][k]) showPeachFloat(); bSave(); return; }
   if(e.target.closest("[data-more]")){ bDetailsOpen[i]=!bDetailsOpen[i]; bAllDetailsOpen=false; bRenderDays(); return; }
   if(e.target.closest("[data-photo-del]")){ delete bState.img[i]; bSave(); return; }
   if(e.target.closest("[data-photo]")){ card.querySelector("[data-photo-file]").click(); return; }
@@ -1808,6 +1924,9 @@ $("bDayList").addEventListener("input", e=>{
   else if(e.target.matches("[data-transport]")){
     bEditTransportLight(i, e.target.value);
   }
+  else if(e.target.matches("[data-food]")){
+    bEditFoodLight(i, e.target.value);
+  }
 });
 
 $("bOtherList").addEventListener("click", e=>{
@@ -1855,9 +1974,9 @@ $("bPrintBtn").addEventListener("click", ()=> window.print());
 $("bResetBtn").addEventListener("click", ()=>{
   if(!confirm("Nullstille budsjettet? Dette sletter alle innlagte verdier i budsjett-fanen.")) return;
   bState = {startDate:"2026-10-19", endDate:"2026-11-19", travelers:2, tripBudget:"",
-    generalNight:1200, generalTransport:200, transAuto:false,
-    nights:{}, transport:{}, transPinned:{}, other:[], note:{}, place:{}, img:{}, link:{}, color:{},
-    who:{}, whoT:{}, expanded:false};
+    generalNight:1200, generalTransport:200, transAuto:false, generalFood:500, foodAuto:false,
+    nights:{}, transport:{}, transPinned:{}, food:{}, foodPinned:{}, other:[], note:{}, place:{}, img:{}, link:{}, color:{},
+    who:{}, whoT:{}, whoF:{}, expanded:false};
   bBindInputs(); bSave();
 });
 
@@ -1900,9 +2019,14 @@ fetchRate(false);
     const dref = fs.doc(db, "trips", DOC_ID);
     let connected = false;
     fs.onSnapshot(dref, {includeMetadataChanges:true}, snap=>{
+      /* Ikke prosesser vårt eget skriv-ekko (unngår unødvendig re-render midt i typing/klikk) */
+      if(snap.metadata.hasPendingWrites){ setSync("live"); return; }
       if(!snap.exists()){
+        /* Ikke stol på "finnes ikke" fra lokal cache før serveren har bekreftet det –
+           ellers kan et helt ferskt/tomt lokalt cache-lag overskrive ekte delte data. */
+        if(snap.metadata.fromCache) return;
         fb = {setDoc: fs.setDoc, updateDoc: fs.updateDoc, deleteField: fs.deleteField, dref};
-        fs.setDoc(dref, {expenses: state.expenses, rate: state.rate, created: Date.now()}).catch(()=>{});
+        fs.setDoc(dref, {expenses: state.expenses, rate: state.rate, created: Date.now()}, {merge:true}).catch(()=>{});
         flushPending();
         setSync("live");
         return;
@@ -1934,8 +2058,14 @@ fetchRate(false);
     let bConnected = false;
     fs.onSnapshot(bDref, {includeMetadataChanges:true}, snap=>{
       bRef = bDref;
+      /* Ikke prosesser vårt eget skriv-ekko – dette var årsaken til at man bare
+         fikk skrevet inn ett og ett tall i beløp-feltene (feltet mistet fokus
+         fordi hele dagslisten ble bygget på nytt rett etter hvert tastetrykk). */
+      if(snap.metadata.hasPendingWrites) return;
       if(!snap.exists()){
-        fs.setDoc(bDref, {state: JSON.stringify(bState), updated: Date.now()}).catch(()=>{});
+        /* Ikke stol på "finnes ikke" fra lokal cache før serveren har bekreftet det. */
+        if(snap.metadata.fromCache) return;
+        fs.setDoc(bDref, {state: JSON.stringify(bState), updated: Date.now()}, {merge:true}).catch(()=>{});
         return;
       }
       const d = snap.data();
