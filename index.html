@@ -1647,6 +1647,30 @@ function bEditFoodLight(i, val){
 }
 
 /* ---------- andre utgifter ---------- */
+/* Poster som ble lagt inn i den opprinnelige budsjettsiden har ingen id
+   (og kan ha day:"" i stedet for null). Uten id blir raden tegnet med
+   data-oid="undefined", og oppslaget ved klikk finner aldri posten – da
+   skjedde det ingenting når man trykket A/B eller slett. Vi gir derfor
+   alle poster en id og rydder feltene hver gang data lastes inn. */
+function bNormalizeOther(){
+  if(!Array.isArray(bState.other)){ bState.other = []; return false; }
+  let changed = false;
+  const seen = {};
+  bState.other.forEach((o, idx)=>{
+    if(!o || typeof o !== "object") return;
+    if(!o.id || seen[o.id]){
+      o.id = "o"+(bOtherIdSeq++)+"_"+Date.now().toString(36)+"_"+idx;
+      changed = true;
+    }
+    seen[o.id] = true;
+    if(o.day === "" || o.day === undefined){ o.day = null; changed = true; }
+    else if(o.day !== null && typeof o.day !== "number"){ o.day = +o.day; changed = true; }
+    if(typeof o.amount !== "number"){ o.amount = +o.amount || 0; changed = true; }
+    if(!o.who || typeof o.who !== "object"){ o.who = {a:false, b:false}; changed = true; }
+    if(typeof o.name !== "string"){ o.name = o.name==null ? "" : String(o.name); changed = true; }
+  });
+  return changed;
+}
 function bAddOther(){
   const id = "o"+(bOtherIdSeq++)+"_"+Date.now().toString(36);
   bState.other.push({id, name:"", day:null, amount:0, who:{a:false,b:false}});
@@ -1776,9 +1800,9 @@ function bRenderOther(){
     $("bOtherList").innerHTML = '<div class="empty" style="padding:14px 4px">Ingen andre utgifter lagt inn ennå.</div>';
     return;
   }
-  $("bOtherList").innerHTML = bState.other.map(o=>{
+  $("bOtherList").innerHTML = bState.other.map((o, oi)=>{
     const w = o.who||{};
-    return '<div class="other-item" data-oid="'+o.id+'">'+
+    return '<div class="other-item" data-oid="'+o.id+'" data-oidx="'+oi+'">'+
       '<div class="oi-mid">'+
         '<input class="field" style="margin-bottom:6px" placeholder="Hva er det?" data-oname value="'+escapeHtml(o.name||"")+'">'+
         '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+
@@ -1950,11 +1974,19 @@ $("bDayList").addEventListener("input", e=>{
   }
 });
 
+/* Slår opp posten en rad hører til. Faller tilbake på radens plassering
+   hvis id-en mangler eller ikke stemmer, så knappene aldri blir "døde". */
+function bFindOther(row){
+  if(!row) return null;
+  const byId = bState.other.find(x=>x.id===row.dataset.oid);
+  if(byId) return byId;
+  const idx = +row.dataset.oidx;
+  return Number.isInteger(idx) ? (bState.other[idx]||null) : null;
+}
 $("bOtherList").addEventListener("click", e=>{
   const row = e.target.closest(".other-item"); if(!row) return;
-  const id = row.dataset.oid;
-  const o = bState.other.find(x=>x.id===id); if(!o) return;
-  if(e.target.closest("[data-odel]")){ bRemoveOther(id); return; }
+  const o = bFindOther(row); if(!o) return;
+  if(e.target.closest("[data-odel]")){ bRemoveOther(o.id); return; }
   const wb = e.target.closest("[data-owho]");
   if(wb){
     o.who = o.who||{}; const k = wb.dataset.owho; o.who[k] = !o.who[k];
@@ -1967,14 +1999,14 @@ $("bOtherList").addEventListener("click", e=>{
 });
 $("bOtherList").addEventListener("input", e=>{
   const row = e.target.closest(".other-item"); if(!row) return;
-  const o = bState.other.find(x=>x.id===row.dataset.oid); if(!o) return;
+  const o = bFindOther(row); if(!o) return;
   if(e.target.matches("[data-oname]")){ o.name = e.target.value; bLightSave(); }
   else if(e.target.matches("[data-oamt]")){ o.amount = Math.max(0, parseFloat(e.target.value)||0); bNumericSave(o.day); }
 });
 $("bOtherList").addEventListener("change", e=>{
   if(e.target.matches("[data-oday]")){
     const row = e.target.closest(".other-item");
-    const o = bState.other.find(x=>x.id===row.dataset.oid); if(!o) return;
+    const o = bFindOther(row); if(!o) return;
     o.day = e.target.value===""? null : +e.target.value;
     bSave();
   }
@@ -1993,6 +2025,7 @@ $("bImportFile").addEventListener("change", async e=>{
   try{
     const d = JSON.parse(await f.text());
     bState = Object.assign(bState, d);
+    bNormalizeOther();
     bBindInputs(); bSave();
     alert("Importert!");
   }catch(err){ alert("Kunne ikke lese filen."); }
@@ -2013,6 +2046,7 @@ try{
   const saved = JSON.parse(localStorage.getItem(B_KEY));
   if(saved) bState = Object.assign(bState, saved);
 }catch(e){}
+bNormalizeOther();
 bBindInputs();
 bRender();
 
@@ -2098,16 +2132,20 @@ fetchRate(false);
       }
       const d = snap.data();
       const firstConnect = !bConnected; bConnected = true;
+      let needsMigration = false;
       if(d && d.state){
         try{
           bApplyingRemote = true;
           const remote = JSON.parse(d.state);
           bState = Object.assign(bState, remote);
+          needsMigration = bNormalizeOther();
         }catch(e){}
         finally{ bApplyingRemote = false; }
       }
       bBindInputs(); bRender();
       if(firstConnect) bSaveLocal();
+      /* Skriv tilbake id-ene så begge telefonene får samme rydda data */
+      if(needsMigration){ bSaveLocal(); bSaveCloud(); }
     }, err=>{});
   }catch(e){ setSync("local"); }
 })();
