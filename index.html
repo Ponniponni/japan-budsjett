@@ -549,6 +549,7 @@
         <button type="button" class="b-btn" id="bHotelSpread">Behold låste 📌, fordel resten</button>
       </div>
       <p class="b-hint">«Behold låste, fordel resten» bruker generell pris × antall netter som total, beholder de låste nettene uendret, og fordeler resten på de ulåste nettene.</p>
+      <label class="b-check"><input type="checkbox" id="bHotelAuto"> Automatisk fordeling – hold totalbudsjettet fast (lås netter med 📌)</label>
     </section>
 
     <section class="card">
@@ -1446,14 +1447,14 @@ const FULL_MONTH = ["januar","februar","mars","april","mai","juni","juli","augus
 let bState = {
   startDate:"2026-10-19", endDate:"2026-11-19", travelers:2, tripBudget:"",
   generalNight:1200, generalTransport:200, transAuto:false,
-  generalFood:500, foodAuto:false,
+  generalFood:500, foodAuto:false, hotelAuto:false,
   nights:{}, transport:{}, transPinned:{}, food:{}, foodPinned:{},
   other:[], note:{}, place:{}, img:{}, link:{}, color:{},
   who:{}, whoT:{}, whoF:{}, expanded:false
 };
 let bOtherIdSeq = 1;
 let bDetailsOpen = {}, bAllDetailsOpen = false;
-let bRef = null, bApplyingRemote = false, bCloudTimer = null;
+let bRef = null, bApplyingRemote = false, bCloudTimer = null, bLastSent = null;
 const SWATCHES = ["", "#f7c8dc", "#ffe1b8", "#c9e8d4", "#c9dcf4", "#e3cdf0"];
 let colorEditIndex = null;
 const ICO_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>';
@@ -1496,8 +1497,43 @@ function bSaveCloud(){
   if(!bRef || bApplyingRemote) return;
   clearTimeout(bCloudTimer);
   bCloudTimer = setTimeout(()=>{
-    fbSetDoc(bRef, {state: JSON.stringify(bState), updated: Date.now()}).catch(()=>{});
+    const json = JSON.stringify(bState);
+    /* Husk hva vi sendte. Serveren sender det samme tilbake som en ny
+       hendelse når skrivingen er bekreftet – uten dette bygget appen om
+       hele siden ca. et sekund etter hvert tastetrykk, og feltet mistet
+       fokus midt i et tall. */
+    bLastSent = json;
+    fbSetDoc(bRef, {state: json, updated: Date.now()}).catch(()=>{});
   }, 500);
+}
+/* Kjører en opptegning uten å miste markøren i feltet man skriver i. */
+function bWithFocusPreserved(fn){
+  const ae = document.activeElement;
+  const ATTRS = ["data-hotel","data-transport","data-food","data-place","data-link",
+                 "data-note","data-oname","data-oamt","data-oday"];
+  let info = null;
+  if(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)){
+    const attr = ATTRS.find(a=>ae.hasAttribute(a));
+    const card = ae.closest ? ae.closest(".bday-card, .other-item") : null;
+    let start = null, end = null;
+    try{ start = ae.selectionStart; end = ae.selectionEnd; }catch(e){}
+    if(attr && card){
+      info = {attr, start, end,
+        sel: card.classList.contains("bday-card")
+          ? '.bday-card[data-i="'+card.dataset.i+'"] ['+attr+']'
+          : '.other-item[data-oid="'+card.dataset.oid+'"] ['+attr+']'};
+    }else if(ae.id){
+      info = {sel:"#"+ae.id, start, end};
+    }
+  }
+  fn();
+  if(info){
+    const el = document.querySelector(info.sel);
+    if(el && el!==document.activeElement){
+      try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); }
+      if(info.start!=null){ try{ el.setSelectionRange(info.start, info.end); }catch(e){} }
+    }
+  }
 }
 function bSave(){ bSaveLocal(); bSaveCloud(); bRender(); }
 /* Lett lagring for tekstfelt inni dag-/utgiftslistene: oppdaterer IKKE listenes
@@ -1587,64 +1623,83 @@ function bSpreadFoodKeepPinned(){
   }
   bSave();
 }
-function bEditTransport(i, val){ bEditTransportLight(i, val); bRender(); }
-/* Som over, men uten å bygge om hele dag-listen (unngår at feltet mister
-   fokus) – oppdaterer i stedet dagssum-tallet for berørte dager direkte. */
-function bEditTransportLight(i, val){
-  const D = bNDays(), v = Math.max(0, parseFloat(val)||0);
-  const old = bTransAmt(i);
-  bState.transport[i] = v;
-  const touched = [i];
-  if(bState.transAuto){
-    const target = (parseFloat(bState.generalTransport)||0)*D;
-    let diff = v-old;
-    const others = []; for(let k=0;k<D;k++){ if(k!==i && !bState.transPinned[k]) others.push(k); }
+/* ---------- felles motor for beløp pr dag (hotell / transport / mat) ----------
+   Når «Automatisk fordeling» er på: det du skriver inn står fast, låste (📌)
+   linjer står fast, og resten av budsjettet – generell sats × antall dager –
+   fordeles likt på de gjenstående linjene. */
+const B_KINDS = {
+  hotel: {
+    attr:"data-hotel",
+    count:()=>bNNights(),
+    get:k=>bHotelAmt(k),
+    set:(k,v)=>{ bState.nights[k] = bState.nights[k]||{price:0,pinned:false}; bState.nights[k].price = v; },
+    pinned:k=>bHotelPinned(k),
+    general:()=>parseFloat(bState.generalNight)||0,
+    auto:()=>!!bState.hotelAuto
+  },
+  transport: {
+    attr:"data-transport",
+    count:()=>bNDays(),
+    get:k=>bTransAmt(k),
+    set:(k,v)=>{ bState.transport[k] = v; },
+    pinned:k=>!!bState.transPinned[k],
+    general:()=>parseFloat(bState.generalTransport)||0,
+    auto:()=>!!bState.transAuto
+  },
+  food: {
+    attr:"data-food",
+    count:()=>bNDays(),
+    get:k=>bFoodAmt(k),
+    set:(k,v)=>{ bState.food[k] = v; },
+    pinned:k=>!!bState.foodPinned[k],
+    general:()=>parseFloat(bState.generalFood)||0,
+    auto:()=>!!bState.foodAuto
+  }
+};
+function bUpdateDayBadges(indices){
+  const N = bNNights();
+  for(const k of indices){
+    const badge = document.querySelector('.bday-card[data-i="'+k+'"] .bday-sum');
+    if(!badge) continue;
+    const h = k>=N ? 0 : bHotelAmt(k);
+    const oth = bState.other.filter(o=>o.day===k).reduce((s,o)=>s+(+o.amount||0),0);
+    badge.textContent = bMoney(h+bTransAmt(k)+bFoodAmt(k)+oth);
+  }
+}
+/* Lett variant: bygger ikke om dag-listen, så feltet beholder fokus. */
+function bEditAmountLight(kind, i, val){
+  const K = B_KINDS[kind];
+  const n = K.count(), v = Math.max(0, parseFloat(val)||0);
+  K.set(i, v);
+  const touched = [];
+  if(K.auto()){
+    const target = K.general()*n;
+    let lockedSum = v;
+    const others = [];
+    for(let k=0;k<n;k++){
+      if(k===i) continue;
+      if(K.pinned(k)) lockedSum += K.get(k);
+      else others.push(k);
+    }
     if(others.length){
-      const per = diff/others.length;
-      for(const k of others){ bState.transport[k] = Math.max(0, Math.round(bTransAmt(k)-per)); touched.push(k); }
+      const remaining = Math.max(0, target-lockedSum);
+      const base = Math.floor(remaining/others.length);
+      let rest = remaining - base*others.length, done = 0;
+      for(const k of others){ K.set(k, base + (done<rest?1:0)); done++; touched.push(k); }
     }
   }
   bSaveLocal(); bSaveCloud(); bRecalcTotals();
+  bUpdateDayBadges([i].concat(touched));
   for(const k of touched){
-    const badge = document.querySelector('.bday-card[data-i="'+k+'"] .bday-sum');
-    if(badge){
-      const isLast = k>=bNNights();
-      const h = isLast?0:bHotelAmt(k);
-      const others2 = bState.other.filter(o=>o.day===k).reduce((s,o)=>s+(+o.amount||0),0);
-      badge.textContent = bMoney(h+bTransAmt(k)+bFoodAmt(k)+others2);
-    }
-    const tInput = document.querySelector('.bday-card[data-i="'+k+'"] [data-transport]');
-    if(tInput && k!==i) tInput.value = bTransAmt(k);
+    const el = document.querySelector('.bday-card[data-i="'+k+'"] ['+K.attr+']');
+    if(el && el!==document.activeElement) el.value = K.get(k);
   }
 }
-function bEditFood(i, val){ bEditFoodLight(i, val); bRender(); }
-/* Lett versjon for matbeløp – samme mønster som bEditTransportLight. */
-function bEditFoodLight(i, val){
-  const D = bNDays(), v = Math.max(0, parseFloat(val)||0);
-  const old = bFoodAmt(i);
-  bState.food[i] = v;
-  const touched = [i];
-  if(bState.foodAuto){
-    let diff = v-old;
-    const others = []; for(let k=0;k<D;k++){ if(k!==i && !bState.foodPinned[k]) others.push(k); }
-    if(others.length){
-      const per = diff/others.length;
-      for(const k of others){ bState.food[k] = Math.max(0, Math.round(bFoodAmt(k)-per)); touched.push(k); }
-    }
-  }
-  bSaveLocal(); bSaveCloud(); bRecalcTotals();
-  for(const k of touched){
-    const badge = document.querySelector('.bday-card[data-i="'+k+'"] .bday-sum');
-    if(badge){
-      const isLast = k>=bNNights();
-      const h = isLast?0:bHotelAmt(k);
-      const others2 = bState.other.filter(o=>o.day===k).reduce((s,o)=>s+(+o.amount||0),0);
-      badge.textContent = bMoney(h+bTransAmt(k)+bFoodAmt(k)+others2);
-    }
-    const fInput = document.querySelector('.bday-card[data-i="'+k+'"] [data-food]');
-    if(fInput && k!==i) fInput.value = bFoodAmt(k);
-  }
-}
+/* Beholdt for kompatibilitet */
+function bEditTransportLight(i, val){ bEditAmountLight("transport", i, val); }
+function bEditFoodLight(i, val){ bEditAmountLight("food", i, val); }
+function bEditTransport(i, val){ bEditAmountLight("transport", i, val); bRender(); }
+function bEditFood(i, val){ bEditAmountLight("food", i, val); bRender(); }
 
 /* ---------- andre utgifter ---------- */
 /* Poster som ble lagt inn i den opprinnelige budsjettsiden har ingen id
@@ -1722,6 +1777,7 @@ function bBindInputs(){
   $("bTransAuto").checked = !!bState.transAuto;
   $("bGenFood").value = bState.generalFood;
   $("bFoodAuto").checked = !!bState.foodAuto;
+  $("bHotelAuto").checked = !!bState.hotelAuto;
 }
 function bMoney(n){ return nb.format(Math.round(n||0))+" kr"; }
 
@@ -1879,6 +1935,7 @@ $("bTripBudget").addEventListener("input", ()=>{ bState.tripBudget = $("bTripBud
 $("bGenNight").addEventListener("input", ()=>{ bState.generalNight = $("bGenNight").value; bSave(); });
 $("bGenTrans").addEventListener("input", ()=>{ bState.generalTransport = $("bGenTrans").value; bSave(); });
 $("bTransAuto").addEventListener("change", ()=>{ bState.transAuto = $("bTransAuto").checked; bSave(); });
+$("bHotelAuto").addEventListener("change", ()=>{ bState.hotelAuto = $("bHotelAuto").checked; bSave(); });
 $("bGenFood").addEventListener("input", ()=>{ bState.generalFood = $("bGenFood").value; bSave(); });
 $("bFoodAuto").addEventListener("change", ()=>{ bState.foodAuto = $("bFoodAuto").checked; bSave(); });
 $("bHotelSpread").addEventListener("click", bSpreadHotelKeepPinned);
@@ -1961,17 +2018,9 @@ $("bDayList").addEventListener("input", e=>{
   if(e.target.matches("[data-place]")){ bState.place[i]=e.target.value; bLightSave(); }
   else if(e.target.matches("[data-link]")){ bState.link[i]=e.target.value; bLightSave(); }
   else if(e.target.matches("[data-note]")){ bState.note[i]=e.target.value; bLightSave(); }
-  else if(e.target.matches("[data-hotel]")){
-    bState.nights[i]=bState.nights[i]||{price:0,pinned:false};
-    bState.nights[i].price=Math.max(0,parseFloat(e.target.value)||0);
-    bNumericSave(i);
-  }
-  else if(e.target.matches("[data-transport]")){
-    bEditTransportLight(i, e.target.value);
-  }
-  else if(e.target.matches("[data-food]")){
-    bEditFoodLight(i, e.target.value);
-  }
+  else if(e.target.matches("[data-hotel]")){ bEditAmountLight("hotel", i, e.target.value); }
+  else if(e.target.matches("[data-transport]")){ bEditAmountLight("transport", i, e.target.value); }
+  else if(e.target.matches("[data-food]")){ bEditAmountLight("food", i, e.target.value); }
 });
 
 /* Slår opp posten en rad hører til. Faller tilbake på radens plassering
@@ -2035,7 +2084,7 @@ $("bPrintBtn").addEventListener("click", ()=> window.print());
 $("bResetBtn").addEventListener("click", ()=>{
   if(!confirm("Nullstille budsjettet? Dette sletter alle innlagte verdier i budsjett-fanen.")) return;
   bState = {startDate:"2026-10-19", endDate:"2026-11-19", travelers:2, tripBudget:"",
-    generalNight:1200, generalTransport:200, transAuto:false, generalFood:500, foodAuto:false,
+    generalNight:1200, generalTransport:200, transAuto:false, generalFood:500, foodAuto:false, hotelAuto:false,
     nights:{}, transport:{}, transPinned:{}, food:{}, foodPinned:{}, other:[], note:{}, place:{}, img:{}, link:{}, color:{},
     who:{}, whoT:{}, whoF:{}, expanded:false};
   bBindInputs(); bSave();
@@ -2131,6 +2180,9 @@ fetchRate(false);
         return;
       }
       const d = snap.data();
+      /* Serverens bekreftelse på vårt eget skriv – innholdet er allerede
+         det vi har lokalt, så ingen grunn til å tegne siden på nytt. */
+      if(d && d.state && d.state === bLastSent) return;
       const firstConnect = !bConnected; bConnected = true;
       let needsMigration = false;
       if(d && d.state){
@@ -2142,7 +2194,7 @@ fetchRate(false);
         }catch(e){}
         finally{ bApplyingRemote = false; }
       }
-      bBindInputs(); bRender();
+      bWithFocusPreserved(()=>{ bBindInputs(); bRender(); });
       if(firstConnect) bSaveLocal();
       /* Skriv tilbake id-ene så begge telefonene får samme rydda data */
       if(needsMigration){ bSaveLocal(); bSaveCloud(); }
