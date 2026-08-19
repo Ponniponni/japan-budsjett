@@ -1449,9 +1449,10 @@ let bState = {
   generalNight:1200, generalTransport:200, transAuto:false,
   generalFood:500, foodAuto:false, hotelAuto:false,
   nights:{}, transport:{}, transPinned:{}, food:{}, foodPinned:{},
-  other:[], note:{}, place:{}, img:{}, link:{}, color:{},
+  other:[], note:{}, place:{}, img:{}, imgDays:{}, link:{}, color:{},
   who:{}, whoT:{}, whoF:{}, expanded:false
 };
+let bFs = null, bDb = null;
 let bOtherIdSeq = 1;
 let bDetailsOpen = {}, bAllDetailsOpen = false;
 let bRef = null, bApplyingRemote = false, bCloudTimer = null, bLastSent = null;
@@ -1492,12 +1493,21 @@ function bSplitWho(amt, w){
 }
 
 /* ---------- skriving ---------- */
-function bSaveLocal(){ try{ localStorage.setItem(B_KEY, JSON.stringify(bState)); }catch(e){} }
+/* Bildene holdes utenfor localStorage – de er store, og nettleseren har
+   bare noen få MB til rådighet. Firestore sin egen offline-cache tar vare
+   på dem, så de er tilgjengelige uten nett likevel. */
+function bSaveLocal(){
+  try{
+    const slim = Object.assign({}, bState, {img:{}});
+    localStorage.setItem(B_KEY, JSON.stringify(slim));
+  }catch(e){}
+}
 function bSaveCloud(){
   if(!bRef || bApplyingRemote) return;
   clearTimeout(bCloudTimer);
   bCloudTimer = setTimeout(()=>{
-    const json = JSON.stringify(bState);
+    /* Bildene lagres i egne dokumenter og skal aldri være med her. */
+    const json = JSON.stringify(Object.assign({}, bState, {img:{}}));
     /* Husk hva vi sendte. Serveren sender det samme tilbake som en ny
        hendelse når skrivingen er bekreftet – uten dette bygget appen om
        hele siden ca. et sekund etter hvert tastetrykk, og feltet mistet
@@ -1746,24 +1756,150 @@ function bRemoveOther(id){
 }
 
 /* ---------- bilde ---------- */
+/* Maksimal størrelse på ett lagret bilde. Firestore tillater 1 MiB pr
+   dokument, og hvert bilde ligger nå i sitt eget dokument – vi holder god
+   margin til grensen uansett. */
+const B_IMG_MAX_BYTES = 700000;
 function bCompressImage(file, cb){
   const reader = new FileReader();
   reader.onload = ev=>{
     const img = new Image();
     img.onload = ()=>{
-      const maxW = 480;
-      const scale = Math.min(1, maxW/img.width);
-      const c = document.createElement("canvas");
-      c.width = Math.round(img.width*scale); c.height = Math.round(img.height*scale);
-      const ctx = c.getContext("2d");
-      ctx.drawImage(img, 0, 0, c.width, c.height);
-      cb(c.toDataURL("image/jpeg", 0.72));
+      /* Prøv gradvis mindre/hardere komprimering til bildet er trygt lite. */
+      const steps = [[900,0.72],[720,0.68],[560,0.62],[440,0.55],[340,0.45]];
+      let out = null;
+      for(const [maxW, q] of steps){
+        const scale = Math.min(1, maxW/img.width);
+        const c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(img.width*scale));
+        c.height = Math.max(1, Math.round(img.height*scale));
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        out = c.toDataURL("image/jpeg", q);
+        if(out.length <= B_IMG_MAX_BYTES) break;
+      }
+      cb(out);
     };
     img.onerror = ()=> cb(null);
     img.src = ev.target.result;
   };
   reader.onerror = ()=> cb(null);
   reader.readAsDataURL(file);
+}
+
+/* ---------- bilder: eget dokument pr dag ----------
+   Bildene lå tidligere inni den store state-teksten som lagres i ETT
+   dokument. Firestore godtar maks 1 MiB pr dokument, så etter noen bilder
+   ble hele lagringen avvist – bildet dukket opp et øyeblikk og forsvant
+   når Firestore rullet endringen tilbake. Nå ligger hvert bilde i sitt
+   eget dokument, så grensen gjelder pr bilde i stedet for samlet. */
+let bImg = {};            /* dag -> data-URL (kun i minnet + sky) */
+let bImgUnsub = {};       /* dag -> avmeldingsfunksjon for lytteren */
+function bImgDocId(i){ return SHARE_CODE + "-img-" + i; }
+function bHasImg(i){ return !!bImg[i]; }
+function bImgDays(){
+  return Object.keys(bState.imgDays||{}).filter(k=>bState.imgDays[k]).map(Number);
+}
+function bMarkImgDay(i, on){
+  bState.imgDays = bState.imgDays || {};
+  if(on) bState.imgDays[i] = true; else delete bState.imgDays[i];
+}
+function bPaintImg(i){
+  const card = document.querySelector('.bday-card[data-i="'+i+'"] .bday-photo-sq');
+  if(!card) return;
+  const del = card.querySelector("[data-photo-del]");
+  const existing = card.querySelector("img");
+  if(bImg[i]){
+    if(existing) existing.src = bImg[i];
+    else{
+      const el = document.createElement("img");
+      el.src = bImg[i];
+      card.insertBefore(el, card.firstChild);
+      const ph = card.querySelector(".cam");
+      if(ph) ph.remove();
+    }
+    if(!del){
+      const b = document.createElement("button");
+      b.type="button"; b.className="photo-del"; b.setAttribute("data-photo-del",""); b.textContent="✕";
+      b.setAttribute("aria-label","Fjern bilde");
+      card.appendChild(b);
+    }
+  }else{
+    if(existing) existing.remove();
+    if(del) del.remove();
+    if(!card.querySelector(".cam")){
+      const s = document.createElement("span");
+      s.className = "cam"; s.textContent = "🏨";
+      card.insertBefore(s, card.firstChild);
+    }
+  }
+}
+function bWatchImg(i){
+  if(!bFs || !bDb || bImgUnsub[i]) return;
+  try{
+    bImgUnsub[i] = bFs.onSnapshot(bFs.doc(bDb,"trips",bImgDocId(i)), snap=>{
+      if(snap.metadata.hasPendingWrites) return;
+      const d = snap.exists() ? snap.data() : null;
+      const data = d && d.data ? d.data : null;
+      if(data !== (bImg[i]||null)){
+        if(data) bImg[i] = data; else delete bImg[i];
+        bPaintImg(i);
+      }
+    }, ()=>{});
+  }catch(e){}
+}
+function bSetImage(i, dataUrl, done){
+  bImg[i] = dataUrl;
+  bMarkImgDay(i, true);
+  bPaintImg(i);
+  bSaveLocal(); bSaveCloud();
+  if(!bFs || !bDb){ if(done) done(true); return; }
+  bFs.setDoc(bFs.doc(bDb,"trips",bImgDocId(i)), {data:dataUrl, updated:Date.now()})
+    .then(()=>{ bWatchImg(i); if(done) done(true); })
+    .catch(err=>{
+      /* Rull tilbake synlig i stedet for at bildet bare forsvinner */
+      delete bImg[i]; bMarkImgDay(i, false);
+      bPaintImg(i); bSaveLocal(); bSaveCloud();
+      alert("Bildet kunne ikke lagres. Prøv et mindre bilde.\n\n(" + (err && err.message ? err.message : "ukjent feil") + ")");
+      if(done) done(false);
+    });
+}
+function bRemoveImage(i){
+  delete bImg[i];
+  bMarkImgDay(i, false);
+  bPaintImg(i);
+  bSaveLocal(); bSaveCloud();
+  if(bImgUnsub[i]){ try{ bImgUnsub[i](); }catch(e){} delete bImgUnsub[i]; }
+  if(bFs && bDb) bFs.deleteDoc(bFs.doc(bDb,"trips",bImgDocId(i))).catch(()=>{});
+}
+/* Flytter bilder som ligger i det gamle formatet ut i egne dokumenter. */
+function bMigrateImages(){
+  if(!bState.img || !Object.keys(bState.img).length) return false;
+  const old = bState.img;
+  bState.img = {};
+  for(const k in old){
+    if(!old[k]) continue;
+    const i = Number(k);
+    bImg[i] = old[k];
+    bMarkImgDay(i, true);
+    if(bFs && bDb){
+      bFs.setDoc(bFs.doc(bDb,"trips",bImgDocId(i)), {data:old[k], updated:Date.now()})
+        .then(()=> bWatchImg(i)).catch(()=>{});
+    }else{
+      bImgPending[i] = true;   /* lastes opp når Firebase er klar */
+    }
+  }
+  return true;
+}
+let bImgPending = {};
+function bFlushImageUploads(){
+  if(!bFs || !bDb) return;
+  for(const k in bImgPending){
+    const i = Number(k);
+    if(!bImg[i]){ delete bImgPending[k]; continue; }
+    bFs.setDoc(bFs.doc(bDb,"trips",bImgDocId(i)), {data:bImg[i], updated:Date.now()})
+      .then(()=> bWatchImg(i)).catch(()=>{});
+    delete bImgPending[k];
+  }
 }
 
 /* ---------- rendering ---------- */
@@ -1801,7 +1937,7 @@ function bRenderDays(){
     const noteOpen = bAllDetailsOpen || bDetailsOpen[i];
     const wH = bState.who[i]||{}, wT = bState.whoT[i]||{}, wF = bState.whoF[i]||{};
     const color = bState.color[i]||"";
-    const img = bState.img[i];
+    const img = bImg[i];
     html += '<div class="bday-card'+(noteOpen?' noteopen':'')+(color?' tinted':'')+'"'+bCardStyle(color)+' data-i="'+i+'">'+
       '<div class="bday-head"><span class="bday-date">Dag '+(i+1)+' <span>· '+bFmtDayDate(iso)+'</span></span>'+
       '<span class="bday-sum">'+bMoney(daySum)+'</span></div>'+
@@ -1958,7 +2094,7 @@ $("bDayList").addEventListener("click", e=>{
   if(e.target.closest("[data-whot]")){ const k=e.target.closest("[data-whot]").dataset.whot; bState.whoT[i]=bState.whoT[i]||{}; bState.whoT[i][k]=!bState.whoT[i][k]; if(k==="b"&&bState.whoT[i][k]) showPeachFloat(); bSave(); return; }
   if(e.target.closest("[data-whof]")){ const k=e.target.closest("[data-whof]").dataset.whof; bState.whoF[i]=bState.whoF[i]||{}; bState.whoF[i][k]=!bState.whoF[i][k]; if(k==="b"&&bState.whoF[i][k]) showPeachFloat(); bSave(); return; }
   if(e.target.closest("[data-more]")){ bDetailsOpen[i]=!bDetailsOpen[i]; bAllDetailsOpen=false; bRenderDays(); return; }
-  if(e.target.closest("[data-photo-del]")){ delete bState.img[i]; bSave(); return; }
+  if(e.target.closest("[data-photo-del]")){ bRemoveImage(i); return; }
   if(e.target.closest("[data-photo]")){ card.querySelector("[data-photo-file]").click(); return; }
   if(e.target.closest("[data-open-link]")){ bOpenLink(bState.link[i]); return; }
   if(e.target.closest("[data-color-open]")){ openColorSheet(i); return; }
@@ -1967,7 +2103,11 @@ $("bDayList").addEventListener("change", e=>{
   if(e.target.matches("[data-photo-file]")){
     const card = e.target.closest(".bday-card"); const i = +card.dataset.i;
     const f = e.target.files[0]; if(!f) return;
-    bCompressImage(f, dataUrl=>{ if(dataUrl){ bState.img[i]=dataUrl; bSave(); } });
+    bCompressImage(f, dataUrl=>{
+      if(!dataUrl){ alert("Kunne ikke lese bildet."); return; }
+      bSetImage(i, dataUrl);
+    });
+    e.target.value = "";
   }
 });
 
@@ -2062,7 +2202,9 @@ $("bOtherList").addEventListener("change", e=>{
 });
 
 $("bExportBtn").addEventListener("click", ()=>{
-  const blob = new Blob([JSON.stringify(bState,null,2)],{type:"application/json"});
+  /* Ta med bildene i sikkerhetskopien selv om de lagres separat */
+  const full = Object.assign({}, bState, {img: bImg});
+  const blob = new Blob([JSON.stringify(full,null,2)],{type:"application/json"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "japan-budsjett-"+todayStr()+".json";
@@ -2075,7 +2217,9 @@ $("bImportFile").addEventListener("change", async e=>{
     const d = JSON.parse(await f.text());
     bState = Object.assign(bState, d);
     bNormalizeOther();
+    bMigrateImages();   /* legger bildene fra filen ut i egne dokumenter */
     bBindInputs(); bSave();
+    bImgDays().forEach(bWatchImg);
     alert("Importert!");
   }catch(err){ alert("Kunne ikke lese filen."); }
   e.target.value = "";
@@ -2083,9 +2227,14 @@ $("bImportFile").addEventListener("change", async e=>{
 $("bPrintBtn").addEventListener("click", ()=> window.print());
 $("bResetBtn").addEventListener("click", ()=>{
   if(!confirm("Nullstille budsjettet? Dette sletter alle innlagte verdier i budsjett-fanen.")) return;
+  bImgDays().forEach(i=>{
+    if(bImgUnsub[i]){ try{ bImgUnsub[i](); }catch(e){} delete bImgUnsub[i]; }
+    if(bFs && bDb) bFs.deleteDoc(bFs.doc(bDb,"trips",bImgDocId(i))).catch(()=>{});
+  });
+  bImg = {};
   bState = {startDate:"2026-10-19", endDate:"2026-11-19", travelers:2, tripBudget:"",
     generalNight:1200, generalTransport:200, transAuto:false, generalFood:500, foodAuto:false, hotelAuto:false,
-    nights:{}, transport:{}, transPinned:{}, food:{}, foodPinned:{}, other:[], note:{}, place:{}, img:{}, link:{}, color:{},
+    nights:{}, transport:{}, transPinned:{}, food:{}, foodPinned:{}, other:[], note:{}, place:{}, img:{}, imgDays:{}, link:{}, color:{},
     who:{}, whoT:{}, whoF:{}, expanded:false};
   bBindInputs(); bSave();
 });
@@ -2096,6 +2245,7 @@ try{
   if(saved) bState = Object.assign(bState, saved);
 }catch(e){}
 bNormalizeOther();
+bMigrateImages();   /* bilder fra gammelt lokalt format */
 bBindInputs();
 bRender();
 
@@ -2165,6 +2315,7 @@ fetchRate(false);
        opprinnelige budsjettsiden brukte, slik at alt dere har lagt inn
        der blir med videre. */
     window.fbSetDoc = fs.setDoc;
+    bFs = fs; bDb = db;
     const bDref = fs.doc(db, "trips", SHARE_CODE);
     let bConnected = false;
     fs.onSnapshot(bDref, {includeMetadataChanges:true}, snap=>{
@@ -2194,7 +2345,12 @@ fetchRate(false);
         }catch(e){}
         finally{ bApplyingRemote = false; }
       }
+      /* Flytt bilder fra gammelt format ut i egne dokumenter */
+      if(bMigrateImages()) needsMigration = true;
       bWithFocusPreserved(()=>{ bBindInputs(); bRender(); });
+      /* Lytt på bildene som hører til turen, og last opp evt. ventende */
+      bFlushImageUploads();
+      bImgDays().forEach(bWatchImg);
       if(firstConnect) bSaveLocal();
       /* Skriv tilbake id-ene så begge telefonene får samme rydda data */
       if(needsMigration){ bSaveLocal(); bSaveCloud(); }
