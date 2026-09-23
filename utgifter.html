@@ -425,6 +425,131 @@
   .who-pill.b.on{background:var(--pb);border-color:var(--pb);color:#fff}
   @keyframes justAdded{0%{background:var(--accent-soft);border-color:var(--accent)}100%{}}
   .other-item.just-added{animation:justAdded 1.4s ease-out}
+
+  /* ===== Tog / etapper ===== */
+  .t-sum-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 0;font-size:14px}
+  .t-sum-row+.t-sum-row{border-top:1px dashed var(--line)}
+  .t-sum-row b{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+  .t-sum-row small{display:block;color:var(--muted);font-weight:500;font-size:11.5px}
+  .t-progress{height:7px;border-radius:99px;background:var(--card2);overflow:hidden;margin:10px 0 4px}
+  .t-progress span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#e85391,#f48ab4);transition:width .3s}
+
+  .leg-list{position:relative;margin:4px 0 0}
+  .leg-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;
+    padding:15px 15px 13px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .leg-card.booked{border-color:color-mix(in srgb, var(--good) 55%, var(--line))}
+  .leg-card.is-car{background:var(--card2);box-shadow:none;border-style:dashed}
+  .leg-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+  .leg-date{font-size:12px;font-weight:750;color:var(--muted);display:inline-block;min-width:0}
+  .leg-date::first-letter{text-transform:uppercase}
+  .leg-top-r{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+  .leg-edit{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:var(--card2);
+    color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:0 0 auto}
+  .leg-edit svg{width:14px;height:14px}
+  .leg-edit:active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .leg-date span{color:var(--accent)}
+  .leg-chip{font-size:10.5px;font-weight:750;border-radius:99px;padding:3px 9px;white-space:nowrap;
+    background:var(--accent-soft);color:var(--accent)}
+  .leg-chip.ok{background:var(--good-soft);color:var(--good)}
+  .leg-chip.info{background:var(--card2);color:var(--muted);border:1px solid var(--line)}
+  .leg-route{display:flex;align-items:center;gap:9px;font-size:18px;font-weight:780;letter-spacing:-.3px;line-height:1.25}
+  .leg-route .mode{font-size:21px;flex:0 0 auto}
+  .leg-route .arrow{color:var(--accent);font-weight:600}
+  .leg-jp{font-size:12px;color:var(--jp);margin:3px 0 0 30px;
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",-apple-system,sans-serif}
+  .leg-main{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:11px 0 4px;
+    padding:10px 12px;border-radius:13px;background:var(--card2)}
+  .leg-card.is-car .leg-main{background:var(--card)}
+  .leg-main .nm{font-size:13.5px;font-weight:700;min-width:0}
+  .leg-main .tm{font-size:15px;font-weight:780;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--accent)}
+  .leg-steps{list-style:none;margin:10px 0 2px;padding:0}
+  .leg-steps li{display:grid;grid-template-columns:42px 22px 1fr;gap:6px;font-size:13px;line-height:1.45;
+    padding:4px 0;position:relative;align-items:start}
+  .leg-steps li .t{font-weight:750;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .leg-steps li .i{font-size:15px;line-height:1.25;text-align:center}
+  .leg-steps li .x{color:var(--ink);min-width:0}
+  .leg-steps li.nt{grid-template-columns:22px 1fr}
+  .leg-steps li.nt .t{display:none}
+  .leg-steps li.ni{grid-template-columns:42px 1fr}
+  .leg-steps li.ni .i{display:none}
+  .leg-steps li.nt.ni{grid-template-columns:1fr}
+  .st-tk{margin:3px 0 2px;font-size:12px;line-height:1.45;color:var(--muted)}
+  .st-tk.needs{margin:7px 0 3px;padding:8px 10px;border-radius:11px;background:var(--card2);font-size:12.5px;line-height:1.5;
+    color:var(--ink);border:1px solid color-mix(in srgb, var(--accent) 40%, var(--line))}
+  .leg-card.is-car .st-tk.needs{background:var(--card)}
+  .st-tk.needs.done{border-color:color-mix(in srgb, var(--good) 60%, var(--line));background:var(--good-soft)}
+  .st-tk-txt{display:grid;grid-template-columns:18px 1fr;gap:4px}
+  .st-tk-ico{font-size:12px;line-height:1.6}
+  .st-br{display:block;height:5px}
+  .st-tk a{color:var(--accent);font-weight:650;white-space:nowrap}
+  .st-book-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px}
+  .st-sale{font-size:11.5px;color:var(--muted);min-width:0}
+  .st-sale b{color:var(--accent);font-weight:700}
+  .st-book{flex:0 0 auto;border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:99px;
+    padding:6px 12px;font-size:12px;font-weight:750;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .st-book.on{background:var(--good);border-color:var(--good);color:#fff}
+  .st-book:active{transform:scale(.96)}
+  .step-row{border:1px solid var(--line);border-radius:14px;padding:10px 10px 4px;margin-bottom:10px;background:var(--card2)}
+  .step-row .field{margin-bottom:8px;background:var(--card)}
+  .step-row-top{display:flex;gap:7px;align-items:flex-start}
+  .step-row-top input{flex:0 0 112px}
+  .step-row-top select{flex:1;min-width:0}
+  .step-del{flex:0 0 auto;width:38px;height:44px;border:0;border-radius:11px;background:var(--card);color:var(--muted);
+    font-size:14px;font-weight:700;cursor:pointer}
+  .step-check{margin:0 2px 8px}
+  .step-open{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);font-weight:650}
+  .step-open .field{flex:1;min-width:0}
+  .leg-tix{margin-top:10px;padding:10px 12px 8px;border-radius:13px;background:var(--card2);border:1px solid var(--line)}
+  .leg-card.is-car .leg-tix{background:var(--card)}
+  .leg-tix .hd{font-size:11px;font-weight:750;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+  .leg-tix ul{margin:0;padding:0 0 0 16px;font-size:12.5px;line-height:1.5;color:var(--ink)}
+  .leg-tix li{margin-bottom:5px}
+  .leg-tix a{color:var(--accent);font-weight:650;white-space:nowrap}
+  .leg-price{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;
+    margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);font-size:13px}
+  .leg-price b{font-variant-numeric:tabular-nums}
+  .leg-price .muted{color:var(--muted);font-size:12px}
+  .leg-sale{font-size:12px;color:var(--muted);margin-top:6px}
+  .leg-sale b{color:var(--accent);font-weight:700}
+  .leg-tips-toggle{width:100%;text-align:left;background:transparent;border:0;color:var(--accent);
+    font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;padding:8px 2px 0;
+    display:flex;align-items:center;gap:5px}
+  .leg-tips-toggle svg{width:14px;height:14px;transition:transform .18s}
+  .leg-card.tipsopen .leg-tips-toggle svg{transform:rotate(180deg)}
+  .leg-tips{display:none;margin:8px 0 0;padding:0 0 0 16px;font-size:12.5px;color:var(--ink);line-height:1.5}
+  .leg-tips li{margin-bottom:4px}
+  .leg-card.tipsopen .leg-tips{display:block}
+  .leg-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+  .leg-btn{border:1.5px solid var(--line);background:var(--card2);color:var(--ink);border-radius:99px;
+    padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+    display:inline-flex;align-items:center;gap:5px;text-decoration:none;white-space:nowrap;line-height:1.2}
+  .leg-btn:active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .leg-btn.book-on{background:var(--good);border-color:var(--good);color:#fff}
+    .leg-add{width:100%;border:1.5px dashed color-mix(in srgb, var(--accent) 45%, var(--line));background:transparent;
+    border-radius:20px;padding:16px 15px;font-family:inherit;cursor:pointer;text-align:left;color:var(--ink);
+    display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .leg-add .plus{flex:0 0 auto;width:36px;height:36px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;line-height:1}
+  .leg-add .tx b{display:block;font-size:14.5px}
+  .leg-add .tx span{font-size:12px;color:var(--muted)}
+  .leg-add:active{background:var(--accent-soft)}
+  .t-tips{margin:0;padding:0;list-style:none}
+  .t-tips li{display:grid;grid-template-columns:26px 1fr;gap:6px;font-size:13px;line-height:1.5;padding:6px 0}
+  .t-tips li+li{border-top:1px dashed var(--line)}
+  .t-tips li b{font-weight:700}
+  .t-tips a{color:var(--accent)}
+  .leg-hint{display:flex;gap:6px;align-items:flex-start;margin:0 0 9px;padding:8px 10px;border-radius:11px;
+    background:color-mix(in srgb, var(--card2) 70%, transparent);font-size:12px;font-weight:650;color:var(--ink)}
+  .leg-hint .ok{color:var(--good)}
+
+  /* Etappe-arket */
+  .sheet.tall{max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .mode-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .mode-btn{border:1.5px solid var(--line);background:var(--card2);color:var(--ink);border-radius:99px;
+    padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+  .mode-btn.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+  textarea.field{resize:vertical;line-height:1.45}
+  .field-hint{font-size:11.5px;color:var(--muted);margin:-6px 2px 12px}
 </style>
 </head>
 <body>
@@ -621,6 +746,41 @@
     </footer>
   </div>
 
+  <!-- ============ SIDE: TOG ============ -->
+  <div class="page" id="page-tog">
+    <div class="title-row">
+      <div class="page-title">Tog 🚄</div>
+      <button class="theme-btn pg" aria-label="Bytt tema">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3 19 19M19 5l-1.7 1.7M6.7 17.3 5 19"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+      </button>
+    </div>
+    <p class="page-sub">Etappene mellom stedene – med konkrete tog, tider og priser. Innad i byene tar dere det som det kommer.</p>
+
+    <section class="card" id="tSumCard">
+      <h2>Oversikt</h2>
+      <div id="tSum"></div>
+      <div class="t-progress"><span id="tProgress" style="width:0"></span></div>
+      <div class="b-hint" id="tProgressTxt" style="margin-top:2px"></div>
+      <div class="b-toolbar" style="margin-top:12px">
+        <button type="button" class="b-btn" id="tToBudget">Overfør til budsjettet 🎒</button>
+      </div>
+      <p class="b-hint">Reisedagene i budsjettet får etappeprisen × antall reisende + vanlig dagsbeløp til lokaltransport, og låses med 📌. Leiebilen røres ikke.</p>
+    </section>
+
+    <div id="legList" class="leg-list"></div>
+
+    <button type="button" class="leg-add" id="tAddLeg">
+      <span class="plus">+</span>
+      <span class="tx"><b>Legg til etappe</b><span>Neste stopp etter Kyoto – når dere har bestemt dere</span></span>
+    </button>
+
+    <section class="card">
+      <h2>Greit å vite</h2>
+      <ul class="t-tips" id="tTips"></ul>
+    </section>
+  </div>
+
   <!-- ============ SIDE: FRASER ============ -->
   <div class="page" id="page-fraser">
     <div class="title-row">
@@ -662,6 +822,7 @@
 
 <!-- Tab-bar -->
 <div class="peach-toast-float" id="peachToastFloat"><span class="peach">🍑</span>Du har finest rumpe</div>
+<div class="peach-toast-float" id="tToast" style="color:var(--accent);border-color:var(--accent)"></div>
 
 <nav class="tabbar">
   <button class="tab on" data-page="hjem">
@@ -671,6 +832,10 @@
   <button class="tab" data-page="budsjett">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14a1 1 0 0 1 1 1v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v2"/><circle cx="16.5" cy="13.5" r="1.1" fill="currentColor" stroke="none"/></svg>
     <span>Budsjett</span>
+  </button>
+  <button class="tab" data-page="tog">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="14" rx="3.5"/><path d="M5 11h14M9 21l1.6-4M15 21l-1.6-4"/><circle cx="9" cy="14" r=".9" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r=".9" fill="currentColor" stroke="none"/></svg>
+    <span>Tog</span>
   </button>
   <button class="tab" data-page="fraser">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.38-4.1-1.05L3 20l1.05-5.4A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.5 10h7M8.5 13.5h4.5"/></svg>
@@ -710,6 +875,43 @@
     <button type="button" class="today-btn" id="colorPrevBtn" style="margin-bottom:14px">Samme farge som forrige dag</button>
     <div class="form-actions">
       <button class="btn btn-primary" id="colorCloseBtn">Ferdig</button>
+    </div>
+  </div>
+</div>
+
+<!-- Etappe-ark (Tog-fanen) -->
+<div class="overlay" id="legOverlay">
+  <div class="sheet tall">
+    <h3 id="legSheetTitle">Ny etappe</h3>
+    <p class="note">Alt lagres og deles med den andre telefonen.</p>
+    <div class="b-2col">
+      <div><div class="lbl">Dato</div><input class="field" type="date" id="legDate"></div>
+      <div><div class="lbl">Til dato (valgfritt)</div><input class="field" type="date" id="legDateTo"></div>
+    </div>
+    <div class="b-2col">
+      <div><div class="lbl">Fra</div><input class="field" id="legFrom" placeholder="F.eks. Kyoto" autocomplete="off"></div>
+      <div><div class="lbl">Til</div><input class="field" id="legTo" placeholder="F.eks. Naoshima" autocomplete="off"></div>
+    </div>
+    <div class="lbl">Transport</div>
+    <div class="mode-row" id="legModes"></div>
+    <div class="lbl">Tog / rute</div>
+    <input class="field" id="legName" placeholder="F.eks. Nozomi 12 eller Keihan" autocomplete="off">
+    <div class="b-2col">
+      <div><div class="lbl">Avgang</div><input class="field" type="time" id="legDep"></div>
+      <div><div class="lbl">Ankomst</div><input class="field" type="time" id="legArr"></div>
+    </div>
+    <div class="lbl">Pris per person (¥)</div>
+    <input class="field" type="number" inputmode="numeric" id="legPrice" placeholder="0">
+    <div class="lbl">Steg for steg</div>
+    <div id="legStepRows"></div>
+    <button type="button" class="b-mini-btn" id="legAddStep" style="margin-bottom:8px">+ Legg til steg</button>
+    <div class="field-hint" style="margin-top:4px">Klokkeslett og ikon er valgfritt. Skriv billettinfo der det trengs, og huk av «Må bestilles» for å få en Bestilt-knapp.</div>
+    <div class="lbl">Tips og alternativer</div>
+    <textarea class="field" id="legTips" rows="3" placeholder="Én linje per tips"></textarea>
+    <div class="form-actions">
+      <button class="btn btn-ghost" id="legCancel">Avbryt</button>
+      <button class="btn btn-primary" id="legSave">Lagre</button>
+      <button class="btn btn-danger" id="legDelete" hidden>Slett</button>
     </div>
   </div>
 </div>
@@ -1059,6 +1261,7 @@ function renderRate(){
 
 function render(){
   renderRate();
+  tRender();
   const all = Object.values(state.expenses).sort((a,b)=> b.date.localeCompare(a.date) || (b.created||0)-(a.created||0));
 
   /* statistikk */
@@ -1974,6 +2177,10 @@ function bRenderDays(){
         '<button type="button" class="icon-btn" data-open-link aria-label="Åpne lenke">'+ICO_OPEN+'</button>'+
         '<button type="button" class="icon-btn'+(color?' has-color':'')+'"'+(color?' style="--bcolor:'+color+'"':'')+' data-color-open aria-label="Velg farge">'+ICO_EYEDROP+'</button>'+
       '</div>'+
+      legsOnDay(i).map(l=>'<div class="leg-hint"><span>'+legModeOf(l.mode)[1]+'</span><span>'+
+        escapeHtml(l.from||"?")+' → '+escapeHtml(l.to||"?")+(l.name?' · '+escapeHtml(l.name):'')+
+        (l.dep && legDayIndex(l.date)===i?' '+escapeHtml(l.dep):'')+((legBookables(l).length || l.mode==="car") && legDone(l)?' <span class="ok">✓ bestilt</span>':'')+
+        '</span></div>').join("")+
       (others.length ? '<div class="b-hint" style="margin:0 0 9px">+ '+others.length+' andre utgift'+(others.length>1?'er':'')+' denne dagen: '+bMoney(otherSum)+'</div>' : '')+
       '<button type="button" class="bday-note-toggle" data-more><span class="note-ico">'+ICO_NOTE+'</span> Notat <svg class="chev-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>'+
       '<div class="bday-note-body">'+
@@ -2058,6 +2265,7 @@ function bRender(){
   bRecalcTotals();
   bRenderDays();
   bRenderOther();
+  tRender();
 }
 
 /* ---------- events ---------- */
@@ -2232,11 +2440,578 @@ $("bResetBtn").addEventListener("click", ()=>{
     if(bFs && bDb) bFs.deleteDoc(bFs.doc(bDb,"trips",bImgDocId(i))).catch(()=>{});
   });
   bImg = {};
+  const keepLegs = legsAll();   /* togplanen hører til Tog-fanen og beholdes */
   bState = {startDate:"2026-10-19", endDate:"2026-11-19", travelers:2, tripBudget:"",
     generalNight:1200, generalTransport:200, transAuto:false, generalFood:500, foodAuto:false, hotelAuto:false,
     nights:{}, transport:{}, transPinned:{}, food:{}, foodPinned:{}, other:[], note:{}, place:{}, img:{}, imgDays:{}, link:{}, color:{},
-    who:{}, whoT:{}, whoF:{}, expanded:false};
+    who:{}, whoT:{}, whoF:{}, expanded:false, legs:keepLegs};
   bBindInputs(); bSave();
+});
+
+/* ====================================================================
+   TOG – etappene mellom stedene. Lagres i budsjett-dokumentet
+   (bState.legs), så de deles mellom telefonene akkurat som budsjettet.
+   Tider og priser er hentet fra Ekitan for de aktuelle datoene
+   (høsten 2026, rutetabell fra mars 2026).
+   ==================================================================== */
+const LEG_MODES = [["train","🚄","Tog"],["bus","🚌","Buss"],["car","🚗","Bil"],["boat","⛴️","Båt"],["plane","✈️","Fly"],["other","🚶","Annet"]];
+const LEG_BOOK = {
+  jre: {label:"Bestill hos JR East", url:"https://www.eki-net.com/en/jreast-train-reservation/Top/Index"},
+  jrw: {label:"Bestill hos JR West", url:"https://www.westjr.co.jp/global/en/ticket/overview/"}
+};
+const JRE_URL = "https://www.eki-net.com/en/jreast-train-reservation/Top/Index";
+const JRW_URL = "https://www.westjr.co.jp/global/en/ticket/overview/";
+/* Hvert steg: t = klokkeslett, i = ikon, x = hva som skjer, tk = billettinfo,
+   book = må bestilles (gir «Bestilt»-knapp), open = når salget åpner
+   ("jr" = kl. 10 japansk tid én måned før, ellers et tidspunkt i ISO-format),
+   done = bestilt. */
+const LEG_DEFAULTS = [
+  {id:"leg-tokyo-ito", date:"2026-10-24", from:"Tokyo (Shinjuku)", to:"Ito", jp:"新宿 → 品川 → 伊東",
+   mode:"train", name:"Odoriko 5", dep:"10:08", arr:"11:45", price:4000, booked:false,
+   steps:[
+     {t:"08:50", i:"🚶", x:"Gå fra hotellet til JR Shinjuku (10–15 min med koffert, eller ta taxi)"},
+     {t:"09:16", i:"🚃", x:"JR Yamanote-linjen fra Shinjuku, spor 14 → Shinagawa 09:35 (ankommer spor 1), uten bytte",
+      tk:"Ingen billett – gå gjennom sperringen med Suica."},
+     {t:"09:35", i:"🍱", x:"God tid på Shinagawa: gå fra spor 1 over hovedhallen til spor 12 (5–10 min), og kjøp gjerne matpakke (ekiben) til turen"},
+     {t:"10:08", i:"🚆", x:"Limited Express Odoriko 5 fra Shinagawa, spor 12 → Ito 11:45 (ankommer spor 1, rett ved utgangen)",
+      tk:"Bestill på JR-EAST Train Reservation. Velg e-billett koblet til Suica – da trekkes selve reisen (¥2 420) fra Suica i sperringen, og dere trenger ingen papirbillett. Uten e-billett: hent papirbilletten i en JR-automat på Shinjuku med QR-koden. "+JRE_URL+"\n"+
+         "💺 Velg A- og B-sete i vogn 1 eller 9. A-siden er havsiden – finest utsikt mellom Hayakawa og Nebukawa – og vogn 1 og 9 har bagasjehyller til store kofferter.",
+      book:true, open:"jr"},
+     {t:"12:30", i:"🚐", x:"Gratis hotellbuss fra Ito stasjon til Hatoya Hotel (hver halvtime 12:30–17:00)",
+      tk:"Gratis, ingen bestilling. Bussen står til høyre etter billettsperringen, ved suvenirbutikken."}
+   ],
+   tips:"Pris per person: billett ¥2 420 + reservert sete ¥1 580.\n"+
+        "Odoriko har bare reserverte seter – bestill så snart salget åpner, for det er lørdag, og Izu er populært i helgene.\n"+
+        "Yamanote-linjen går hvert 4.–5. minutt. Rekker dere ikke 09:16, ta neste – men prøv å være på Shinagawa senest 09:50.\n"+
+        "Odoriko 5 starter på Tokyo stasjon kl. 10:00 – dere kan også gå på der.\n"+
+        "Uten bytte: Saphir Odoriko 5 går direkte fra Shinjuku 12:25 → Ito 14:16 (bare premiumseter, ¥7 080 per person).\n"+
+        "Tidligere: Odoriko 1 fra Tokyo 09:00 → Ito 10:43.",
+   gFrom:"Shinjuku Station", gTo:"Ito Station, Shizuoka", ek:{sf:2334, st:1588, tm:"0900"}},
+  {id:"leg-ito-minamiizu", date:"2026-10-25", from:"Ito", to:"Minamiizu (Gensen Itto)", jp:"伊東 → 伊豆急下田",
+   mode:"train", name:"Izukyu-linjen", dep:"12:52", arr:"14:06", price:1856, booked:false,
+   steps:[
+     {t:"10:30", i:"🚐", x:"Siste hotellbuss fra Hatoya til Ito stasjon (går 08:50–10:30, senere: taxi ca. 5 min)",
+      tk:"Gratis, ingen bestilling."},
+     {t:"12:52", i:"🚃", x:"Izukyu-linjen (lokaltog) fra Ito, spor 1 → Izukyu-Shimoda 14:06. Spor 1 ligger rett ved stasjonsbygningen, så ingen trapper",
+      tk:"Ingen billett – Suica i sperringen (¥1 856). Sjekk at det er nok penger på Suica før dere drar.\n"+
+         "💺 Sitt på venstre side – det er havsiden. Finest utsikt mellom Izu-Atagawa og Izu-Inatori, og på klare dager ser dere Izu-øyene."},
+     {t:"15:00", i:"🚐", x:"Gratis shuttle fra Izukyu-Shimoda stasjon → Gensen Itto 15:20",
+      tk:"Gratis, men må bestilles på telefon 0558-36-3311 (maks 8 personer). Be gjerne resepsjonen på Hatoya ringe for dere dagen før.",
+      book:true}
+   ],
+   tips:"Neste shuttle går 16:00.\n"+
+        "Raskere: Odoriko 7 Ito 12:22 → Shimoda 13:24, eller Odoriko 9 13:48 → 14:42 (+¥800 for reservert sete, A-siden er havsiden).\n"+
+        "Uten shuttle: Tokai-buss fra Shimoda stasjon til Kujo-bashi (ca. 25 min), så 1 min å gå.",
+   gFrom:"Ito Station, Shizuoka", gTo:"Izukyu-Shimoda Station", ek:{sf:1588, st:1555, tm:"1230"}},
+  {id:"leg-car", date:"2026-10-27", dateTo:"2026-10-30", from:"Gensen Itto Minamiizu", to:"Shibu Onsen",
+   mode:"car", name:"Leiebil", dep:"", arr:"", price:0, booked:false,
+   steps:[
+     {t:"", i:"🚗", x:"27. okt – Hostel Saruya (Mt. Fuji)"},
+     {t:"", i:"🚗", x:"28. okt – Nishiyama Onsen Keiunkan"},
+     {t:"", i:"🚗", x:"29. okt – Airbnb"},
+     {t:"", i:"🚗", x:"30. okt – Ikariya Ryokan, Shibu Onsen"}
+   ],
+   tips:"Planlegges for seg – prisen ligger allerede i budsjettet.\n"+
+        "Skal bilen hentes i Shimoda: hotellets gratis shuttle til Izukyu-Shimoda går 10:00 og 11:00 (bestilles på 0558-36-3311)."},
+  {id:"leg-shibu-kanazawa", date:"2026-11-02", from:"Shibu Onsen", to:"Kanazawa", jp:"湯田中 → 長野 → 金沢",
+   mode:"train", name:"Snow Monkey + Hakutaka 559", dep:"10:50", arr:"13:36", price:11230, booked:false,
+   steps:[
+     {t:"10:00", i:"🚕", x:"Utsjekk – be ryokanen bestille taxi til Yudanaka stasjon (ca. 5–10 min)",
+      tk:"Ryokanen bestiller – betal sjåføren (kontant eller kort)."},
+     {t:"10:25", i:"🎫", x:"På Yudanaka stasjon: kjøp billett og ekspressbillett til Nagano i automaten. Stasjonen har bare én plattform",
+      tk:"Billett ¥1 660 + ekspressbillett ¥100. Kan ikke kjøpes på forhånd. Betal med kontant, kort eller Suica i automaten – Suica går ikke i sperringen."},
+     {t:"10:50", i:"🚆", x:"Nagaden Limited Express «Snow Monkey» Yudanaka → Nagano 11:36 (ankommer under bakken) – reserverte seter i vogn 1",
+      tk:"Sete ¥300 per person, bestilles på nagaden-reserve.jp (31 dager før). Betal med kort – bekreftelsen kommer på e-post, vis den på telefonen om konduktøren spør. https://nagaden-reserve.jp/\n"+
+         "🧳 Vogn 1 har bagasjeplass i begge ender – perfekt til koffertene.",
+      book:true, open:"2026-10-01T15:00:00Z"},
+     {t:"11:36", i:"🚶", x:"Gå fra Nagaden-perrongen (under bakken) opp til JR Nagano og shinkansen-sperringen, ca. 10–15 min – god tid til byttet"},
+     {t:"12:06", i:"🚄", x:"Hokuriku Shinkansen Hakutaka 559 fra Nagano, spor 12 → Kanazawa 13:36",
+      tk:"Bestill på JR-EAST Train Reservation – på nettsiden eller i Welcome Suica Mobile-appen. Velg e-billett koblet til Suica hvis det tilbys; ellers hent billettene i en JR-automat på Nagano stasjon med QR-koden. "+JRE_URL+"\n"+
+         "💺 Velg D- og E-sete: en toseters rad bare for dere, og E-siden har utsikt mot Tateyama-fjellene mellom Kurobe og Toyama. (A-siden ser havet mellom Itoigawa og Kurobe, men er en treseters rad.)\n"+
+         "🧳 Velg gjerne raden som har ryggen mot veggen i kjøreretningen (se setekartet når dere bestiller) – da får koffertene plass bak setene.",
+      book:true, open:"jr"}
+   ],
+   tips:"Privat kupé på Snow Monkey (Spa Cabin) for opptil 4 personer: ¥1 200 for hele kupeen – bestilles samme sted og tid som setene.\n"+
+        "Shinkansen: billett ¥4 120 + reservert sete ¥5 050.\n"+
+        "Tidligere: Limited Express Yukemuri 09:54 → Nagano 10:42, så Hakutaka 557 11:05 → Kanazawa 12:27.\n"+
+        "3. november er japansk helligdag – bestill shinkansen-setene tidlig.",
+   gFrom:"Yudanaka Station", gTo:"Kanazawa Station", ek:{sf:8413, st:6223, tm:"1030"}},
+  {id:"leg-kanazawa-osaka", date:"2026-11-05", from:"Kanazawa", to:"Osaka (Namba)", jp:"金沢 → 敦賀 → 新大阪 → なんば",
+   mode:"train", name:"Tsurugi 17 + Thunderbird 18", dep:"10:05", arr:"13:10", price:9500, booked:false,
+   steps:[
+     {t:"09:20", i:"🚕", x:"Utsjekk – taxi (enklest med kofferter) eller buss fra Korinbo til Kanazawa stasjon (ca. 10–15 min)",
+      tk:"Betal på stedet."},
+     {t:"09:45", i:"🎫", x:"På Kanazawa stasjon: hent billettene i en JR-automat med e5489-merke, og gå inn gjennom shinkansen-sperringen til spor 13",
+      tk:"Skann QR-koden fra bestillingen og ha kortet dere betalte med klart."},
+     {t:"10:05", i:"🚄", x:"Hokuriku Shinkansen Tsurugi 17 fra Kanazawa, spor 13 → Tsuruga 11:01 (ankommer spor 12, 3. etasje)",
+      tk:"Bestill sammen med Thunderbird 18 på én bestilling hos JR-WEST Online Train Reservation. "+JRW_URL+"\n"+
+         "💺 Tsurugi: velg D+E – toseters rad. Thunderbird: velg C+D – D-siden har utsikt over Biwa-sjøen.\n"+
+         "🧳 På begge togene: velg raden med ryggen mot veggen i kjøreretningen (se setekartet) – da får koffertene plass bak setene.",
+      book:true, open:"jr"},
+     {t:"11:14", i:"🚆", x:"Limited Express Thunderbird 18 fra Tsuruga, spor 33 eller 34 (1. etasje) → Shin-Osaka 12:32 (ankommer spor 9)",
+      tk:"Samme bestilling som Tsurugi 17. Thunderbird har bare reserverte seter.",
+      book:false},
+     {t:"12:50", i:"🚇", x:"Osaka Metro Midosuji-linjen fra Shin-Osaka, spor 1 (retning Tennoji) → Namba ca. 13:10 (Henn na Hotel)",
+      tk:"Ingen billett – Suica i sperringen."}
+   ],
+   tips:"Pris per person: billett ¥4 840 + reservert sete ¥4 370 (samlet pris når Tsurugi og Thunderbird bestilles sammen) + metro ¥290.\n"+
+        "Byttet i Tsuruga (13 min) går fra spor 12 i 3. etasje ned til spor 33/34 i 1. etasje med rulletrapp eller heis. Det er vanlig byttetid der, men gå rett ned uten å stoppe.\n"+
+        "På Shin-Osaka tar det ca. 10 min å gå fra JR til metroen. Midosuji går hvert 3.–4. minutt, så ta det rolig.\n"+
+        "Går hver time: 12:05 fra Kanazawa gir Namba 14:57.",
+   gFrom:"Kanazawa Station", gTo:"Namba Station, Osaka", ek:{sf:6223, st:5727, tm:"1000"}},
+  {id:"leg-osaka-kyoto", date:"2026-11-10", from:"Osaka (Candeo, Kitahama)", to:"Kyoto", jp:"淀屋橋 → 祇園四条",
+   mode:"train", name:"Keihan Limited Express", dep:"11:00", arr:"11:48", price:490, booked:false,
+   steps:[
+     {t:"10:50", i:"🚶", x:"Gå fra Candeo Hotels til Yodoyabashi stasjon (ca. 6 min)"},
+     {t:"11:00", i:"🚆", x:"Keihan Limited Express fra Yodoyabashi, spor 4 → Gion-Shijo 11:48, uten bytte",
+      tk:"Ingen billett og ingen reservasjon – Suica i sperringen (¥490). Ekspresstogene går vanligvis fra spor 4 på hverdager (i rushtid også spor 3) – sjekk skjermen."}
+   ],
+   tips:"Går omtrent hvert 10. minutt.\n"+
+        "Skal dere til Kyoto stasjon i stedet: Midosuji-linjen til Umeda, så JR Special Rapid fra Osaka 11:15 → Kyoto 11:44 (¥770 totalt).\n"+
+        "Velg rute når dere vet hvor dere skal bo i Kyoto.",
+   gFrom:"Yodoyabashi Station", gTo:"Gion-Shijo Station", ek:{sf:6143, st:5378, tm:"1100"}}
+];
+const STEP_ICONS = [["","Ingen"],["🚄","Shinkansen"],["🚆","Ekspresstog"],["🚃","Lokaltog"],["🚇","Metro"],["🚌","Buss"],
+  ["🚐","Shuttle"],["🚕","Taxi"],["🚶","Gå"],["⛴️","Båt"],["✈️","Fly"],["🚗","Bil"],["🎫","Billett"],["🍱","Mat"],["🏨","Hotell"]];
+const T_PEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
+const T_CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+let tTipsOpen = {};
+let legEditId = null, legMode = "train", legEditSteps = [];
+
+/* Øk LEGS_REV når forslagene i LEG_DEFAULTS endres. Da oppdateres etappene
+   som ikke er endret for hånd – også en eldre kopi i telefonens minne eller i
+   det delte dokumentet. Det som allerede er markert som bestilt, beholdes. */
+const LEGS_REV = 7;
+function legsEnsure(){
+  if(!Array.isArray(bState.legs)){
+    bState.legs = JSON.parse(JSON.stringify(LEG_DEFAULTS));
+    bState.legsRev = LEGS_REV;
+    return true;
+  }
+  if((+bState.legsRev||1) < LEGS_REV){
+    for(const d of LEG_DEFAULTS){
+      const l = bState.legs.find(x=>x && x.id===d.id);
+      if(!l || l.edited) continue;
+      const wasBooked = !!l.booked;
+      const oldDone = {};
+      if(Array.isArray(l.steps)) l.steps.forEach(s=>{ if(s && s.done) oldDone[stepKey(s)] = true; });
+      for(const k of Object.keys(l)) delete l[k];
+      Object.assign(l, JSON.parse(JSON.stringify(d)), {booked:wasBooked});
+      for(const s of l.steps){ if(s.book && (wasBooked || oldDone[stepKey(s)])) s.done = true; }
+    }
+    bState.legsRev = LEGS_REV;
+    return true;
+  }
+  return false;
+}
+function stepKey(s){ return s.t || String(s.x||"").slice(0,30); }
+function legModeOf(m){ return LEG_MODES.find(x=>x[0]===m) || LEG_MODES[0]; }
+function legsAll(){ return Array.isArray(bState.legs) ? bState.legs : []; }
+function legsSorted(){
+  return legsAll().slice().sort((a,b)=>
+    (a.date||"9999").localeCompare(b.date||"9999") || (a.dep||"99").localeCompare(b.dep||"99"));
+}
+function legDayIndex(iso){
+  if(!iso) return -1;
+  return Math.round((bParseD(iso) - bParseD(bState.startDate))/864e5);
+}
+function legsOnDay(i){
+  return legsSorted().filter(l=>{
+    const a = legDayIndex(l.date); if(a<0) return false;
+    const b = l.dateTo ? legDayIndex(l.dateTo) : a;
+    return i>=a && i<=Math.max(a,b);
+  });
+}
+function legTravelers(){ return Math.max(1, parseFloat(bState.travelers)||1); }
+function legPrice(l){ return Math.max(0, +l.price||0); }
+function legShortDate(iso){
+  return new Date(iso+"T12:00:00").toLocaleDateString("nb-NO",{day:"numeric", month:"short"});
+}
+function legFmtDate(l){
+  if(!l.date) return "Uten dato";
+  const o = {weekday:"short", day:"numeric", month:"short"};
+  let s = new Date(l.date+"T12:00:00").toLocaleDateString("nb-NO", o);
+  if(l.dateTo && l.dateTo!==l.date) s += " – " + new Date(l.dateTo+"T12:00:00").toLocaleDateString("nb-NO", o);
+  const i = legDayIndex(l.date);
+  if(i>=0 && i<bNDays()) s += ' · <span>Dag '+(i+1)+'</span>';
+  return s;
+}
+/* JR-seter: salget åpner kl. 10:00 japansk tid samme dato måneden før (= 01:00 UTC). */
+function legSaleOpen(l){
+  if(!l.date) return null;
+  const [y,m,d] = l.date.split("-").map(Number);
+  let py = y, pm = m-1;
+  if(pm<1){ pm = 12; py--; }
+  const dim = new Date(py, pm, 0).getDate();
+  return new Date(Date.UTC(py, pm-1, Math.min(d, dim), 1, 0));
+}
+function stepOpenDate(l, s){
+  if(!s.open) return null;
+  if(s.open==="jr") return legSaleOpen(l);
+  const d = new Date(s.open);
+  return isNaN(d) ? null : d;
+}
+function legGmaps(l){
+  return "https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(l.gFrom||l.from||"")+
+    "&destination="+encodeURIComponent(l.gTo||l.to||"")+"&travelmode=transit";
+}
+function legEkitan(l){
+  const e = l.ek;
+  return "https://ekitan.com/transit/route/sf-"+e.sf+"/st-"+e.st+"?sf="+e.sf+"&st="+e.st+
+    "&dt="+String(l.date||"").replace(/-/g,"")+"&tm="+(e.tm||"0900")+
+    "&sr=0&ic=1&rp=0&tu1=1&tu2=1&tu3=1&dc=1&tp=0&cv=0&cs_flg=0";
+}
+
+/* Steg lagres som liste. Eldre versjoner lagret dem som tekst
+   («HH:MM 🚄 tekst» per linje) – de gjøres om her. */
+const LEG_EMOJI_RE = /^((?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:️|⃣|\p{Emoji_Modifier}|‍\p{Extended_Pictographic})*)\s*(.*)$/u;
+function parseStepLine(line){
+  let t = "", rest = line.trim();
+  const m = rest.match(/^(\d{1,2}[:.]\d{2})\s+(.*)$/);
+  if(m){ t = m[1].replace(".",":"); if(t.length===4) t = "0"+t; rest = m[2]; }
+  let i = "";
+  const e = rest.match(LEG_EMOJI_RE);
+  if(e && e[2]){ i = e[1]; rest = e[2]; }
+  return {t, i, x:rest};
+}
+function legSteps(l){
+  if(Array.isArray(l.steps)) return l.steps;
+  return String(l.steps||"").split("\n").map(s=>s.trim()).filter(Boolean).map(parseStepLine);
+}
+function legBookables(l){
+  const b = legSteps(l).filter(s=>s && s.book);
+  return b;
+}
+/* Er alt som må bestilles på etappen bestilt? */
+function legDone(l){
+  const b = legBookables(l);
+  if(b.length) return b.every(s=>s.done);
+  return !!l.booked;
+}
+/* Hold beløp som «¥2 420» samlet på én linje */
+function nbYen(html){ return String(html).replace(/(¥\d{1,3}) (\d{3})/g, "$1&nbsp;$2"); }
+/* Tekst med lenker: https-adresser blir klikkbare og vises som domenenavn. */
+function legLinkify(txt){
+  const parts = String(txt).split(/(https?:\/\/[^\s]+)/g);
+  return parts.map((p,i)=>{
+    if(i%2===0) return nbYen(escapeHtml(p));
+    let host = p;
+    try{ host = new URL(p).hostname.replace(/^www\./,""); }catch(e){}
+    return '<a href="'+escapeHtml(p)+'" target="_blank" rel="noopener">'+escapeHtml(host)+' ↗</a>';
+  }).join("");
+}
+function legStepHtml(l, s, idx){
+  const t = s.t||"", ico = s.i||"";
+  const cls = (t ? "" : " nt") + (ico ? "" : " ni");
+  let x = escapeHtml(s.x||"");
+  if(s.tk || s.book){
+    let box = '<div class="st-tk'+(s.book?' needs':'')+(s.book&&s.done?' done':'')+'">';
+    if(s.tk) box += '<div class="st-tk-txt"><span class="st-tk-ico">🎫</span><span>'+
+      String(s.tk).split("\n").map(legLinkify).join('<span class="st-br"></span>')+'</span></div>';
+    if(s.book){
+      let sale = "";
+      if(!s.done){
+        const open = stepOpenDate(l, s);
+        if(open && Date.now() < open.getTime()){
+          const no = open.toLocaleString("nb-NO",{day:"numeric", month:"short", hour:"2-digit", minute:"2-digit", timeZone:"Europe/Oslo"});
+          sale = 'Salget åpner <b>'+escapeHtml(no)+'</b> norsk tid'+(s.open==="jr" ? ' (kl. 10 i Japan)' : '');
+        }else if(open){
+          sale = '<b>Kan bestilles nå</b>';
+        }
+      }
+      box += '<div class="st-book-row">'+(sale ? '<span class="st-sale">'+sale+'</span>' : '<span></span>')+
+        '<button type="button" class="st-book'+(s.done?' on':'')+'" data-step-book="'+idx+'">'+
+        (s.done ? '✓ Bestilt' : '○ Bestilt?')+'</button></div>';
+    }
+    box += '</div>';
+    x += box;
+  }
+  return '<li class="'+cls.trim()+'"><span class="t">'+escapeHtml(t)+'</span><span class="i">'+escapeHtml(ico)+
+    '</span><span class="x">'+x+'</span></li>';
+}
+function legCardHtml(l){
+  const mode = legModeOf(l.mode);
+  const isCar = l.mode==="car";
+  const price = legPrice(l), T = legTravelers();
+  const steps = legSteps(l);
+  const tips = String(l.tips||"").split("\n").map(s=>s.trim()).filter(Boolean);
+  const bookables = legBookables(l);
+  const nDone = bookables.filter(s=>s.done).length;
+  const done = legDone(l);
+  let chip;
+  if(bookables.length){
+    chip = nDone===bookables.length ? '<span class="leg-chip ok">✓ Alt bestilt</span>'
+      : nDone ? '<span class="leg-chip">'+nDone+' av '+bookables.length+' bestilt</span>'
+      : '<span class="leg-chip">Må bestilles</span>';
+  }else if(isCar){
+    chip = l.booked ? '<span class="leg-chip ok">✓ Bestilt</span>' : '<span class="leg-chip info">Eget opplegg</span>';
+  }else{
+    chip = '<span class="leg-chip info">Ingen bestilling</span>';
+  }
+  const time = (l.dep||l.arr) ? escapeHtml(l.dep||"")+(l.arr ? " → "+escapeHtml(l.arr) : "") : "";
+
+  let h = '<div class="leg-card'+(done && (bookables.length || isCar)?' booked':'')+(isCar?' is-car':'')+(tTipsOpen[l.id]?' tipsopen':'')+
+    '" data-leg="'+escapeHtml(l.id)+'">';
+  h += '<div class="leg-top"><span class="leg-date">'+legFmtDate(l)+'</span><span class="leg-top-r">'+chip+
+    '<button type="button" class="leg-edit" data-leg-edit aria-label="Endre etappen">'+T_PEN+'</button></span></div>';
+  h += '<div class="leg-route"><span class="mode">'+mode[1]+'</span><span>'+escapeHtml(l.from||"?")+
+    ' <span class="arrow">→</span> '+escapeHtml(l.to||"?")+'</span></div>';
+  if(l.jp) h += '<div class="leg-jp">'+escapeHtml(l.jp)+'</div>';
+  if(l.name || time){
+    h += '<div class="leg-main"><span class="nm">'+escapeHtml(l.name||mode[2])+'</span>'+
+      (time ? '<span class="tm">'+time+'</span>' : '')+'</div>';
+  }
+  if(steps.length){
+    h += '<ul class="leg-steps">'+steps.map((s,idx)=>legStepHtml(l, s, idx)).join("")+'</ul>';
+  }
+  if(price){
+    h += '<div class="leg-price"><span><b>'+fmtYen(price)+'</b> per person <span class="muted">≈ '+fmtNok(toNok(price))+'</span></span>'+
+      '<span class="muted">'+T+' pers. ≈ <b style="color:var(--ink)">'+fmtNok(toNok(price*T))+'</b></span></div>';
+  }else if(isCar){
+    h += '<div class="leg-price"><span class="muted">Pris: ligger i budsjettet</span></div>';
+  }
+  /* Billettnotater fra en eldre versjon vises fortsatt */
+  const tix = String(l.tickets||"").split("\n").map(s=>s.trim()).filter(Boolean);
+  if(tix.length){
+    h += '<div class="leg-tix"><div class="hd">🎫 Billetter</div><ul>'+
+      tix.map(t=>'<li>'+legLinkify(t)+'</li>').join("")+'</ul></div>';
+  }
+  if(tips.length){
+    h += '<button type="button" class="leg-tips-toggle" data-leg-tips>💡 Tips og alternativer '+T_CHEV+'</button>'+
+      '<ul class="leg-tips">'+tips.map(t=>'<li>'+nbYen(escapeHtml(t))+'</li>').join("")+'</ul>';
+  }
+  const acts = [];
+  if(!isCar && (l.gFrom||l.from) && (l.gTo||l.to)){
+    acts.push('<a class="leg-btn" href="'+escapeHtml(legGmaps(l))+'" target="_blank" rel="noopener">🗺️ Sjekk live</a>');
+  }
+  if(l.ek && l.date){
+    acts.push('<a class="leg-btn" href="'+escapeHtml(legEkitan(l))+'" target="_blank" rel="noopener">🕐 Alle tider '+escapeHtml(legShortDate(l.date))+'</a>');
+  }
+  if(isCar && !bookables.length){
+    acts.push('<button type="button" class="leg-btn'+(l.booked?' book-on':'')+'" data-leg-book>'+(l.booked?'✓ Bestilt':'Marker som bestilt')+'</button>');
+  }
+  if(acts.length) h += '<div class="leg-actions">'+acts.join("")+'</div>';
+  h += '</div>';
+  return h;
+}
+
+function tRender(){
+  const listEl = $("legList"); if(!listEl) return;
+  const legs = legsSorted();
+  listEl.innerHTML = legs.length
+    ? legs.map(legCardHtml).join("")
+    : '<div class="empty"><div class="big">🚄</div>Ingen etapper ennå.<br>Legg til den første under.</div>';
+
+  /* oversikt */
+  const T = legTravelers();
+  const tot = legs.reduce((s,l)=> s + (l.mode==="car" ? 0 : legPrice(l)), 0);
+  let need = 0, got = 0;
+  for(const l of legs){
+    const b = legBookables(l);
+    if(b.length){ need += b.length; got += b.filter(s=>s.done).length; }
+    else if(l.mode==="car"){ need++; if(l.booked) got++; }
+  }
+  $("tSum").innerHTML =
+    '<div class="t-sum-row"><span>Tog og buss per person<small>'+legs.filter(l=>l.mode!=="car").length+' etapper, uten lokaltransport</small></span>'+
+      '<b>'+fmtYen(tot)+'<small>≈ '+fmtNok(toNok(tot))+'</small></b></div>'+
+    '<div class="t-sum-row"><span>For '+T+' personer</span><b>≈ '+fmtNok(toNok(tot*T))+'<small>'+fmtYen(tot*T)+'</small></b></div>';
+  $("tProgress").style.width = (need ? Math.round(got/need*100) : 0)+"%";
+  $("tProgressTxt").textContent = need
+    ? got+" av "+need+" bestillinger er gjort."
+    : "Ingenting trenger å bestilles.";
+
+  /* tips */
+  $("tTips").innerHTML = [
+    ["🎫","<b>Hva må bestilles?</b> Alt som har en «Bestilt?»-knapp under klokkeslettet. JR-seter kan bestilles fra kl. 10:00 japansk tid én måned før reisedagen, Snow Monkey-setet fra 31 dager før – hvert steg viser når. Trykk på knappen når det er gjort, så ser dere begge at det er i orden."],
+    ["📱","<b>Appen å ha:</b> <a href=\"https://apps.apple.com/app/welcome-suica-mobile/id6738336566\" target=\"_blank\" rel=\"noopener\">Welcome Suica Mobile</a> fra JR East – på engelsk, kun iPhone. Den gir dere Suica på telefonen, og dere kan bestille Hokuriku Shinkansen (Nagano → Kanazawa) rett i appen og gå gjennom sperringen med telefonen. Odoriko bestilles på JR-EAST Train Reservation-nettsiden, og Kanazawa → Osaka på JR West sin nettside. JR East-appen og JR West-appen (WESTER) er bare på japansk."],
+    ["💳","<b>Suica</b> dekker lokaltog, metro, buss, Izukyu og Keihan. Welcome Suica Mobile varer i 180 dager og fylles på i appen eller med kontanter i automat. Med Android: kjøp et fysisk Welcome Suica-kort (gyldig i 28 dager – turen er 32, så det må byttes underveis). På Nagaden (Yudanaka–Nagano) går ikke Suica i sperringen – kjøp billett i automaten samme dag (dere kan betale med Suica der)."],
+    ["🧭","<b>Rutesøk på engelsk:</b> Google Maps holder lenge (det er den «Sjekk live» åpner). Vil dere ha en egen app med forsinkelsesvarsler: <i>Japan Travel by NAVITIME</i>."],
+    ["🎟️","<b>JR Pass lønner seg ikke.</b> Etappene koster ca. "+fmtYen(tot).replace(" ","&nbsp;")+" per person til sammen og er spredt over flere uker, mens JR Pass for 7 dager koster fra ¥50 000."],
+    ["🧳","<b>Store kofferter:</b> Ingen av togene i planen krever egen reservasjon for kofferter – hvert tog viser hvor de får plass og hvilke seter som er lurest. NB: Tokaido-shinkansen (f.eks. Kyoto → Tokyo) krever sete med bagasjeplass hvis høyde + bredde + dybde er over 160 cm, ellers ¥1 000 i gebyr om bord. Vil dere slippe å bære: hotellet eller en konbini kan sende koffertene videre (<i>takkyubin</i>), vanligvis framme dagen etter."],
+    ["🗺️","<b>Sjekk live</b> åpner Google Maps med strekningen og viser neste avganger, spor og forsinkelser. <b>Alle tider</b> åpner Ekitan med alle forbindelser akkurat den dagen, med pris (japansk side – bruk «Oversett» i nettleseren)."]
+  ].map(t=>'<li><span>'+t[0]+'</span><span>'+t[1]+'</span></li>').join("");
+}
+
+/* ---------- etappe-kort: knapper ---------- */
+$("legList").addEventListener("click", e=>{
+  const card = e.target.closest(".leg-card"); if(!card) return;
+  const l = legsAll().find(x=>x.id===card.dataset.leg); if(!l) return;
+  if(e.target.closest("[data-leg-tips]")){
+    tTipsOpen[l.id] = !tTipsOpen[l.id];
+    card.classList.toggle("tipsopen", !!tTipsOpen[l.id]);
+    return;
+  }
+  const sb = e.target.closest("[data-step-book]");
+  if(sb){
+    if(!Array.isArray(l.steps)) l.steps = legSteps(l);
+    const s = l.steps[+sb.dataset.stepBook];
+    if(s){ s.done = !s.done; bSave(); }
+    return;
+  }
+  if(e.target.closest("[data-leg-book]")){ l.booked = !l.booked; bSave(); return; }
+  if(e.target.closest("[data-leg-edit]")){ openLegSheet(l.id); return; }
+});
+$("tAddLeg").addEventListener("click", ()=> openLegSheet(null));
+
+/* ---------- overfør til budsjettet ---------- */
+let tToastTimer = null;
+function tToast(msg){
+  const t = $("tToast"); if(!t) return;
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(tToastTimer);
+  tToastTimer = setTimeout(()=> t.classList.remove("show"), 2600);
+}
+$("tToBudget").addEventListener("click", ()=>{
+  const T = legTravelers(), gen = parseFloat(bState.generalTransport)||0, D = bNDays();
+  const sums = {};
+  for(const l of legsAll()){
+    if(l.mode==="car") continue;
+    const p = legPrice(l); if(!p) continue;
+    const i = legDayIndex(l.date); if(i<0 || i>=D) continue;
+    sums[i] = (sums[i]||0) + toNok(p*T);
+  }
+  const days = Object.keys(sums).map(Number).sort((a,b)=>a-b);
+  if(!days.length){ alert("Ingen etapper med pris å overføre ennå."); return; }
+  const lines = days.map(i=>"Dag "+(i+1)+" ("+legShortDate(bDayISO(i))+"): "+fmtNok(sums[i]+gen));
+  if(!confirm("Overføre togprisene til budsjettet?\n\n"+lines.join("\n")+
+    "\n\nEtappepris for "+T+" personer + "+fmtNok(gen)+" til lokaltransport. Dagene låses med 📌.")) return;
+  for(const i of days){ bState.transport[i] = Math.round(sums[i]+gen); bState.transPinned[i] = true; }
+  bSave();
+  tToast("🎒 Lagt inn i budsjettet");
+});
+
+/* ---------- etappe-arket ---------- */
+function renderLegModes(){
+  $("legModes").innerHTML = LEG_MODES.map(m=>
+    '<button type="button" class="mode-btn'+(m[0]===legMode?' on':'')+'" data-mode="'+m[0]+'">'+m[1]+' '+m[2]+'</button>').join("");
+}
+$("legModes").addEventListener("click", e=>{
+  const b = e.target.closest("[data-mode]"); if(!b) return;
+  legMode = b.dataset.mode; renderLegModes();
+});
+/* datetime-local <-> ISO (i telefonens egen tidssone) */
+function toLocalInput(d){
+  if(!d || isNaN(d)) return "";
+  const p = n=>String(n).padStart(2,"0");
+  return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"T"+p(d.getHours())+":"+p(d.getMinutes());
+}
+function renderStepRows(){
+  const l = legEditId ? legsAll().find(x=>x.id===legEditId) : null;
+  const probe = l || {date:$("legDate").value};
+  $("legStepRows").innerHTML = legEditSteps.map((s,idx)=>{
+    const openD = stepOpenDate(probe, s);
+    return '<div class="step-row" data-srow="'+idx+'">'+
+      '<div class="step-row-top">'+
+        '<input class="field" type="time" data-sf="t" value="'+escapeHtml(s.t||"")+'" aria-label="Klokkeslett">'+
+        '<select class="field" data-sf="i" aria-label="Ikon">'+STEP_ICONS.map(o=>
+          '<option value="'+o[0]+'"'+((s.i||"")===o[0]?' selected':'')+'>'+(o[0]?o[0]+' ':'')+o[1]+'</option>').join("")+
+          ((s.i && !STEP_ICONS.some(o=>o[0]===s.i)) ? '<option value="'+escapeHtml(s.i)+'" selected>'+escapeHtml(s.i)+'</option>' : '')+
+        '</select>'+
+        '<button type="button" class="step-del" data-sdel aria-label="Fjern steg">✕</button>'+
+      '</div>'+
+      '<input class="field" data-sf="x" placeholder="Hva skjer? F.eks. Shinkansen fra spor 13 → Tsuruga 11:01" value="'+escapeHtml(s.x||"")+'">'+
+      '<textarea class="field" rows="2" data-sf="tk" placeholder="🎫 Billett: hvor og hvordan (valgfritt – lenker blir klikkbare)">'+escapeHtml(s.tk||"")+'</textarea>'+
+      '<label class="b-check step-check"><input type="checkbox" data-sf="book"'+(s.book?' checked':'')+'> Må bestilles (gir «Bestilt»-knapp)</label>'+
+      (s.book ? '<div class="step-open"><span>Salget åpner</span><input class="field" type="datetime-local" data-sf="open" value="'+toLocalInput(openD)+'"></div>' : '')+
+    '</div>';
+  }).join("") || '<div class="b-hint" style="margin:0 0 10px">Ingen steg ennå.</div>';
+}
+$("legStepRows").addEventListener("input", e=>{
+  const row = e.target.closest("[data-srow]"); if(!row) return;
+  const s = legEditSteps[+row.dataset.srow]; if(!s) return;
+  const f = e.target.dataset.sf;
+  if(f==="t" || f==="i" || f==="x" || f==="tk") s[f] = e.target.value;
+  if(f==="open"){ const d = new Date(e.target.value); s.open = isNaN(d) ? undefined : d.toISOString(); }
+});
+$("legStepRows").addEventListener("change", e=>{
+  const row = e.target.closest("[data-srow]"); if(!row) return;
+  const s = legEditSteps[+row.dataset.srow]; if(!s) return;
+  if(e.target.dataset.sf==="book"){
+    s.book = e.target.checked;
+    if(s.book && !s.open && legMode==="train") s.open = "jr";
+    renderStepRows();
+  }
+  if(e.target.dataset.sf==="i") s.i = e.target.value;
+});
+$("legStepRows").addEventListener("click", e=>{
+  if(!e.target.closest("[data-sdel]")) return;
+  const row = e.target.closest("[data-srow]"); if(!row) return;
+  legEditSteps.splice(+row.dataset.srow, 1);
+  renderStepRows();
+});
+$("legAddStep").addEventListener("click", ()=>{
+  legEditSteps.push({t:"", i:"", x:""});
+  renderStepRows();
+  const rows = $("legStepRows").querySelectorAll("[data-srow]");
+  const last = rows[rows.length-1];
+  if(last){ const inp = last.querySelector('[data-sf="x"]'); if(inp) inp.focus(); }
+});
+function openLegSheet(id){
+  const l = id ? legsAll().find(x=>x.id===id) : null;
+  legEditId = l ? l.id : null;
+  const last = legsSorted().filter(x=>x.to).pop();
+  $("legSheetTitle").textContent = l ? "Endre etappe" : "Ny etappe";
+  $("legDate").value = l ? (l.date||"") : "";
+  $("legDateTo").value = l ? (l.dateTo||"") : "";
+  $("legFrom").value = l ? (l.from||"") : (last ? last.to : "");
+  $("legTo").value = l ? (l.to||"") : "";
+  legMode = l ? (l.mode||"train") : "train";
+  $("legName").value = l ? (l.name||"") : "";
+  $("legDep").value = l ? (l.dep||"") : "";
+  $("legArr").value = l ? (l.arr||"") : "";
+  $("legPrice").value = l && l.price ? l.price : "";
+  legEditSteps = l ? JSON.parse(JSON.stringify(legSteps(l))) : [{t:"", i:"🚄", x:""}];
+  $("legTips").value = l ? (l.tips||"") : "";
+  $("legDelete").hidden = !l;
+  renderLegModes();
+  renderStepRows();
+  $("legOverlay").classList.add("show");
+}
+function closeLegSheet(){ $("legOverlay").classList.remove("show"); legEditId = null; }
+$("legCancel").addEventListener("click", closeLegSheet);
+$("legOverlay").addEventListener("click", e=>{ if(e.target===$("legOverlay")) closeLegSheet(); });
+$("legSave").addEventListener("click", ()=>{
+  const from = $("legFrom").value.trim(), to = $("legTo").value.trim();
+  if(!from && !to){ $("legFrom").focus(); return; }
+  const steps = legEditSteps
+    .map(s=>{
+      const o = {t:(s.t||"").trim(), i:s.i||"", x:(s.x||"").trim()};
+      if((s.tk||"").trim()) o.tk = s.tk.trim();
+      if(s.book){ o.book = true; if(s.open) o.open = s.open; if(s.done) o.done = true; }
+      return o;
+    })
+    .filter(s=>s.x || s.tk);
+  const data = {
+    date: $("legDate").value || "",
+    dateTo: $("legDateTo").value || "",
+    from, to, mode: legMode,
+    name: $("legName").value.trim(),
+    dep: $("legDep").value || "", arr: $("legArr").value || "",
+    price: Math.max(0, parseInt(String($("legPrice").value).replace(/[^\d]/g,""),10) || 0),
+    steps,
+    tips: $("legTips").value.trim()
+  };
+  legsEnsure();
+  const l = legEditId ? bState.legs.find(x=>x.id===legEditId) : null;
+  if(l){
+    /* Ny strekning: fjern stasjonskoder og japansk tekst som hørte til den gamle */
+    if(l.from!==from) delete l.gFrom;
+    if(l.to!==to) delete l.gTo;
+    if(l.from!==from || l.to!==to){ delete l.jp; delete l.ek; }
+    Object.assign(l, data, {edited:true});
+  }else{
+    bState.legs.push(Object.assign({id:"l"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), booked:false, edited:true}, data));
+  }
+  closeLegSheet();
+  bSave();
+});
+$("legDelete").addEventListener("click", ()=>{
+  if(!legEditId) return;
+  const l = legsAll().find(x=>x.id===legEditId);
+  if(!confirm("Slette etappen"+(l ? " «"+(l.from||"")+" → "+(l.to||"")+"»" : "")+"?")) return;
+  bState.legs = legsAll().filter(x=>x.id!==legEditId);
+  closeLegSheet();
+  bSave();
 });
 
 /* ---------- oppstart for budsjett ---------- */
@@ -2246,6 +3021,7 @@ try{
 }catch(e){}
 bNormalizeOther();
 bMigrateImages();   /* bilder fra gammelt lokalt format */
+if(legsEnsure()) bSaveLocal();   /* togplanen legges inn første gang */
 bBindInputs();
 bRender();
 
@@ -2342,6 +3118,9 @@ fetchRate(false);
           const remote = JSON.parse(d.state);
           bState = Object.assign(bState, remote);
           needsMigration = bNormalizeOther();
+          /* Første gang med Tog-fanen: legg togplanen inn i det delte dokumentet */
+          if(Array.isArray(remote.legs)) bState.legsRev = remote.legsRev;
+          if(legsEnsure() || !Array.isArray(remote.legs)) needsMigration = true;
         }catch(e){}
         finally{ bApplyingRemote = false; }
       }
