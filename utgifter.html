@@ -106,7 +106,7 @@
   @keyframes catsway{0%,100%{transform:rotate(-1.3deg)}50%{transform:rotate(1.3deg)}}
   .hero-cat svg{height:195px;width:auto;max-width:56vw;display:block;margin-left:auto;
     filter:drop-shadow(0 6px 16px rgba(0,0,0,.14))}
-  #formCard{position:relative;z-index:2}
+  #formCard,#convCard{position:relative;z-index:2}
   @media (prefers-reduced-motion: reduce){
     body::before,.petal,.hero-cat,.hero-cat .sway{animation:none}
     .petal{display:none}
@@ -267,7 +267,10 @@
   .ph-fon b{font-weight:650;color:var(--ink)}
 
   /* ===== Valuta ===== */
-  .conv-card{padding:22px 18px}
+  .conv-card{padding:18px}
+  .conv-card h2{margin-bottom:10px}
+  .conv-card .conv-top{margin-bottom:12px}
+  .conv-card .conv-res{margin-top:14px}
   .conv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
   .conv-dir{font-size:13px;font-weight:700;color:var(--muted)}
   .conv-dir b{color:var(--ink)}
@@ -572,6 +575,20 @@
       <div class="hero-cat" id="heroCat" role="button" aria-label="Trykk på katten for en fun fact"><span class="sway" id="heroCatInner"></span></div>
     </div>
 
+    <section class="card conv-card" id="convCard">
+      <h2>Valutakalkulator 💮</h2>
+      <div class="conv-top">
+        <span class="conv-dir" id="convDir"><b>Yen</b> → kroner</span>
+        <button class="swap-btn" id="swapBtn" aria-label="Bytt retning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 4l4 4-4 4M21 8H7M7 20l-4-4 4-4M3 16h14"/></svg>
+        </button>
+      </div>
+      <div class="conv-in"><span class="conv-sign" id="convSign">¥</span><input id="convAmount" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+      <div class="conv-res" id="convResult"></div>
+      <div class="quick-row" id="quickRow"></div>
+      <div class="conv-note">Kurs: <span id="convRateTxt"></span> · <a id="convRateEdit">endre</a></div>
+    </section>
+
     <section class="card" id="formCard">
       <h2 id="formTitle">Ny utgift</h2>
       <div class="yen-row"><span class="yen-sign">¥</span><input id="amount" inputmode="numeric" autocomplete="off" placeholder="0"></div>
@@ -794,30 +811,6 @@
     <div id="phraseList"></div>
   </div>
 
-  <!-- ============ SIDE: VALUTA ============ -->
-  <div class="page" id="page-valuta">
-    <div class="title-row">
-      <div class="page-title">Valuta 💮</div>
-      <button class="theme-btn pg" aria-label="Bytt tema">
-        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3 19 19M19 5l-1.7 1.7M6.7 17.3 5 19"/></svg>
-        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
-      </button>
-    </div>
-    <p class="page-sub">Rask omregning mellom yen og kroner.</p>
-    <section class="card conv-card">
-      <div class="conv-top">
-        <span class="conv-dir" id="convDir"><b>Yen</b> → kroner</span>
-        <button class="swap-btn" id="swapBtn" aria-label="Bytt retning">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 4l4 4-4 4M21 8H7M7 20l-4-4 4-4M3 16h14"/></svg>
-        </button>
-      </div>
-      <div class="conv-in"><span class="conv-sign" id="convSign">¥</span><input id="convAmount" inputmode="decimal" autocomplete="off" placeholder="0"></div>
-      <div class="conv-res" id="convResult"></div>
-      <div class="quick-row" id="quickRow"></div>
-      <div class="conv-note">Kurs: <span id="convRateTxt"></span> · <a id="convRateEdit">endre</a></div>
-    </section>
-  </div>
-
 </div>
 
 <!-- Tab-bar -->
@@ -840,10 +833,6 @@
   <button class="tab" data-page="fraser">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.38-4.1-1.05L3 20l1.05-5.4A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.5 10h7M8.5 13.5h4.5"/></svg>
     <span>Fraser</span>
-  </button>
-  <button class="tab" data-page="valuta">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 8l3 4 3-4M12 12v4.5M9.8 13.5h4.4M9.8 15.8h4.4"/></svg>
-    <span>Valuta</span>
   </button>
 </nav>
 
